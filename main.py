@@ -11,7 +11,13 @@ def funkcja_skomplikowana(x):
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 
 st.sidebar.header("Parametry")
-n = st.sidebar.number_input("Liczba podziałów", min_value=2, value=10)
+n = st.sidebar.slider(
+    "Liczba podziałów (n)", 
+    min_value=2, 
+    max_value=500, 
+    value=10, 
+    step=1
+)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środkowa"])
 
 st.markdown("""
