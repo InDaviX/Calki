@@ -58,14 +58,14 @@ with tab1:
         xf = x_bins[i+1]
         h = heights[i]
         
-        ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.8)
+        ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
         
         if pokaz_bledy:
             step_x = m.linspace(xi, xf, 10)
             step_f = funkcja_prosta(step_x)
             step_h = m.full_like(step_x, h)
-            ax.fill_between(step_x, step_f, step_h, where=(step_h > step_f), color='cyan', alpha=0.6, interpolate=True)
-            ax.fill_between(step_x, step_h, step_f, where=(step_f > step_h), color='red', alpha=0.6, interpolate=True)
+            ax.fill_between(step_x, step_f, step_h, where=(step_h > step_f), color='cyan', alpha=0.4, interpolate=True)
+            ax.fill_between(step_x, step_h, step_f, where=(step_f > step_h), color='red', alpha=0.4, interpolate=True)
 
     ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
@@ -98,14 +98,14 @@ with tab2:
         xf_c = x_bins_c[i+1]
         h_c = heights_c[i]
         
-        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.8)
+        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
         
         if pokaz_bledy:
             step_x_c = m.linspace(xi_c, xf_c, 10)
             step_f_c = funkcja_skomplikowana(step_x_c)
             step_h_c = m.full_like(step_x_c, h_c)
-            ax2.fill_between(step_x_c, step_f_c, step_h_c, where=(step_h_c > step_f_c), color='cyan', alpha=0.5, interpolate=True)
-            ax2.fill_between(step_x_c, step_h_c, step_f_c, where=(step_f_c > step_h_c), color='red', alpha=0.5, interpolate=True)
+            ax2.fill_between(step_x_c, step_f_c, step_h_c, where=(step_h_c > step_f_c), color='cyan', alpha=0.4, interpolate=True)
+            ax2.fill_between(step_x_c, step_h_c, step_f_c, where=(step_f_c > step_h_c), color='red', alpha=0.4, interpolate=True)
 
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
