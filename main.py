@@ -35,7 +35,7 @@ with tab1:
     ax.legend()
 
     st.pyplot(fig)
--
+
 with tab2:
     st.header("Wykres f(x) = e^x * cos(e^x)")
     
