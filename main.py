@@ -17,7 +17,7 @@ metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środko
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
-    st.markdown(r"### 📈 Wykres i wzór funkcji prostej: $\Large f(x) = x \cdot e^{-x}$")
+    st.markdown(r"### 📈 Wykres i wzór funkcji prostej: $\large f(x) = x \cdot e^{-x}$")
     x_plot = m.linspace(0, 10, 500)
     y_plot = funkcja_prosta(x_plot)
     
