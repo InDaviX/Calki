@@ -14,6 +14,25 @@ st.sidebar.header("Parametry")
 n = st.sidebar.number_input("Liczba podziałów", min_value=2, value=10)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środkowa"])
 
+st.markdown("""
+    <style>
+    /* Kontener listy zakładek */
+    div[data-baseweb="tab-list"] {
+        width: 100%;
+        gap: 0px;
+    }
+    /* Pojedynczy przycisk zakładki */
+    div[data-baseweb="tab-list"] button {
+        flex: 1;
+        text-align: center;
+    }
+    /* Opcjonalnie: zmiana wielkości czcionki w zakładkach */
+    div[data-baseweb="tab-list"] button p {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
@@ -37,8 +56,7 @@ with tab1:
     st.pyplot(fig)
 
 with tab2:
-    st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
-    st.latex(r"f(x) = e^x \cdot \cos(e^x)")
+    st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
     
     x_comp = m.linspace(0, 2.5, 1000)
     y_comp = funkcja_skomplikowana(x_comp)
