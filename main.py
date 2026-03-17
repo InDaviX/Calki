@@ -37,7 +37,7 @@ st.markdown("""
 
 
 st.sidebar.header("Parametry")
-n = st.sidebar.slider("Liczba podziałów (n)", min_value=2, max_value=500, value=10, step=1)
+n = st.sidebar.slider("Liczba podziałów (n)", min_value=2, max_value=50, value=5, step=1)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Środkowa", "Prawostronna"])
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
