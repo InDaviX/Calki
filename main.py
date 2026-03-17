@@ -58,7 +58,7 @@ with tab1:
         xf = x_bins[i+1]
         h = heights[i]
         
-        ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.3)
+        ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.8)
         
         if pokaz_bledy:
             step_x = m.linspace(xi, xf, 10)
@@ -98,7 +98,7 @@ with tab2:
         xf_c = x_bins_c[i+1]
         h_c = heights_c[i]
         
-        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.2)
+        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.8)
         
         if pokaz_bledy:
             step_x_c = m.linspace(xi_c, xf_c, 10)
