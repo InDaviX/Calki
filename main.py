@@ -53,25 +53,34 @@ with tab1:
     fig, ax = plt.subplots()
     ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
     
+    s_prosta = 0
+    d_prosta = 0
+    
     for i in range(n):
-        xi = x_bins[i]
-        xf = x_bins[i+1]
-        h = heights[i]
+        xi, xf, h = x_bins[i], x_bins[i+1], heights[i]
+        
+        step_x = m.linspace(xi, xf, 100)
+        step_f = funkcja_prosta(step_x)
+        
+        diff = h - step_f
+        s_prosta += m.sum(m.maximum(0, diff)) * (dx / 100)
+        d_prosta += m.sum(m.maximum(0, -diff)) * (dx / 100)
         
         ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
         
         if pokaz_bledy:
-            step_x = m.linspace(xi, xf, 10)
-            step_f = funkcja_prosta(step_x)
-            step_h = m.full_like(step_x, h)
-            ax.fill_between(step_x, step_f, step_h, where=(step_h > step_f), color='cyan', alpha=0.4, interpolate=True)
-            ax.fill_between(step_x, step_h, step_f, where=(step_f > step_h), color='red', alpha=0.4, interpolate=True)
+            ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
+            ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
 
     ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
-    ax.set_title(f"Metoda Prostokątów: {metoda} (n={n})")
     ax.grid(True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
+
+    c1, c2, c3 = st.columns(3)
+    c1.markdown(f"🔵 **Suma nadmiarów:** \n{s_prosta:.6f}")
+    c2.markdown(f"🔴 **Suma niedomiarów:** \n{d_prosta:.6f}")
+    c3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_prosta - d_prosta:.6f}")
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -93,25 +102,34 @@ with tab2:
     fig2, ax2 = plt.subplots()
     ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
     
+    s_skompl = 0
+    d_skompl = 0
+    
     for i in range(n):
-        xi_c = x_bins_c[i]
-        xf_c = x_bins_c[i+1]
-        h_c = heights_c[i]
+        xi_c, xf_c, h_c = x_bins_c[i], x_bins_c[i+1], heights_c[i]
+        
+        step_x_c = m.linspace(xi_c, xf_c, 100)
+        step_f_c = funkcja_skomplikowana(step_x_c)
+        
+        diff_c = h_c - step_f_c
+        s_skompl += m.sum(m.maximum(0, diff_c)) * (dx_c / 100)
+        d_skompl += m.sum(m.maximum(0, -diff_c)) * (dx_c / 100)
         
         ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
         
         if pokaz_bledy:
-            step_x_c = m.linspace(xi_c, xf_c, 10)
-            step_f_c = funkcja_skomplikowana(step_x_c)
-            step_h_c = m.full_like(step_x_c, h_c)
-            ax2.fill_between(step_x_c, step_f_c, step_h_c, where=(step_h_c > step_f_c), color='cyan', alpha=0.4, interpolate=True)
-            ax2.fill_between(step_x_c, step_h_c, step_f_c, where=(step_f_c > step_h_c), color='red', alpha=0.4, interpolate=True)
+            ax2.fill_between(step_x_c, step_f_c, h_c, where=(h_c > step_f_c), color='cyan', alpha=0.4)
+            ax2.fill_between(step_x_c, h_c, step_f_c, where=(step_f_c > h_c), color='red', alpha=0.4)
 
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
-    ax2.set_title(f"Szybkie oscylacje: {metoda} (n={n})")
     ax2.grid(True)
     st.pyplot(fig2)
+
+    k1, k2, k3 = st.columns(3)
+    k1.markdown(f"🔵 **Suma nadmiarów:** \n{s_skompl:.6f}")
+    k2.markdown(f"🔴 **Suma niedomiarów:** \n{d_skompl:.6f}")
+    k3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_skompl - d_skompl:.6f}")
 
 
 
