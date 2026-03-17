@@ -1,6 +1,14 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import math as m
+
+def funkcja_prosta(x):
+    return x * m.e **(-1 * x)
+
+def funkcja_skomplikowana(x):
+    return m.e**x * m.cos(m.e**x)
+
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 st.markdown("Porównanie działania metody prostokątów (w 3 wariantach), metody trapezów oraz metody monte carlo")
@@ -9,10 +17,14 @@ st.sidebar.header("Parametry")
 n = st.sidebar.number_input("Liczba podziałów", min_value=2, value=10)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środkowa"])
 
-
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
+
 with tab1:
-    st.write("Tu będzie wykres x^2")
+    st.write("Wartość funkcji prostej dla x =", n, "2 wynosi:", funkcja_prosta(n))
+
+with tab2:
+    st.write("Wartość funkcji prostej dla x =", n, "2 wynosi:", funkcja_skomplikowana(n))
+
 
 
 
