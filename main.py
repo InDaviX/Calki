@@ -18,6 +18,7 @@ tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
     st.header("Wykres f(x) = x * e^-x")
+    st.latex(r"f(x) = x \cdot e^{-x}")
     x_plot = m.linspace(0, 10, 500)
     y_plot = funkcja_prosta(x_plot)
     
@@ -38,6 +39,7 @@ with tab1:
 
 with tab2:
     st.header("Wykres f(x) = e^x * cos(e^x)")
+    st.latex(r"f(x) = e^x \cdot \cos(e^x)")
     
     x_comp = m.linspace(0, 2.5, 1000)
     y_comp = funkcja_skomplikowana(x_comp)
