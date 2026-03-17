@@ -2,17 +2,11 @@ import streamlit as st
 import numpy as m
 import matplotlib.pyplot as plt
 
-
 def funkcja_prosta(x):
     return x * m.exp(-1 * x)
 
 def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
-
-
-
-
-
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 st.markdown("""
@@ -32,19 +26,12 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-
-
-
-
 st.sidebar.header("Parametry")
 n = st.sidebar.slider("Liczba podziałów (n)", min_value=2, max_value=50, value=5, step=1)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Środkowa", "Prawostronna"])
+pokaz_bledy = st.sidebar.toggle("Pokaż nadmiary i niedomiary", value=True)
+
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
-
-
-
-
-
 
 with tab1:
     st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
@@ -71,27 +58,20 @@ with tab1:
         xf = x_bins[i+1]
         h = heights[i]
         
-        step_x = m.linspace(xi, xf, 10)
-        step_f = funkcja_prosta(step_x)
-        step_h = m.full_like(step_x, h)
-        
         ax.bar(xi, h, width=dx, align='edge', color='lightgray', edgecolor='black', alpha=0.3)
         
-        ax.fill_between(step_x, step_f, step_h, where=(step_h > step_f), color='cyan', alpha=0.6, interpolate=True)
-        ax.fill_between(step_x, step_h, step_f, where=(step_f > step_h), color='red', alpha=0.6, interpolate=True)
+        if pokaz_bledy:
+            step_x = m.linspace(xi, xf, 10)
+            step_f = funkcja_prosta(step_x)
+            step_h = m.full_like(step_x, h)
+            ax.fill_between(step_x, step_f, step_h, where=(step_h > step_f), color='cyan', alpha=0.6, interpolate=True)
+            ax.fill_between(step_x, step_h, step_f, where=(step_f > step_h), color='red', alpha=0.6, interpolate=True)
 
     ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
     ax.set_title(f"Metoda Prostokątów: {metoda} (n={n})")
     ax.grid(True, linestyle='--', alpha=0.6)
-    
     st.pyplot(fig)
-
-
-
-
-
-
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -118,22 +98,20 @@ with tab2:
         xf_c = x_bins_c[i+1]
         h_c = heights_c[i]
         
-        step_x_c = m.linspace(xi_c, xf_c, 10)
-        step_f_c = funkcja_skomplikowana(step_x_c)
-        step_h_c = m.full_like(step_x_c, h_c)
-        
         ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgray', edgecolor='black', alpha=0.2)
         
-        ax2.fill_between(step_x_c, step_f_c, step_h_c, where=(step_h_c > step_f_c), color='cyan', alpha=0.5, interpolate=True)
-        ax2.fill_between(step_x_c, step_h_c, step_f_c, where=(step_f_c > step_h_c), color='red', alpha=0.5, interpolate=True)
+        if pokaz_bledy:
+            step_x_c = m.linspace(xi_c, xf_c, 10)
+            step_f_c = funkcja_skomplikowana(step_x_c)
+            step_h_c = m.full_like(step_x_c, h_c)
+            ax2.fill_between(step_x_c, step_f_c, step_h_c, where=(step_h_c > step_f_c), color='cyan', alpha=0.5, interpolate=True)
+            ax2.fill_between(step_x_c, step_h_c, step_f_c, where=(step_f_c > step_h_c), color='red', alpha=0.5, interpolate=True)
 
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
     ax2.set_title(f"Szybkie oscylacje: {metoda} (n={n})")
     ax2.grid(True)
-    
     st.pyplot(fig2)
-
 
 
 
