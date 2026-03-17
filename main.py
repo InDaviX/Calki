@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
-
+st.markdown("Analiza porównawcza metod prostokątów i trapezów.")
 
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 with tab1:
