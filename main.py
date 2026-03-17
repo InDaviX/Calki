@@ -1,17 +1,14 @@
 import streamlit as st
-import numpy as np
+import numpy as m
 import matplotlib.pyplot as plt
-import math as m
 
 def funkcja_prosta(x):
-    return x * m.e **(-1 * x)
+    return x * m.exp(-1 * x)
 
 def funkcja_skomplikowana(x):
-    return m.e**x * m.cos(m.e**x)
-
+    return m.exp(x) * m.cos(m.exp(x))
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
-st.markdown("Porównanie działania metody prostokątów (w 3 wariantach), metody trapezów oraz metody monte carlo")
 
 st.sidebar.header("Parametry")
 n = st.sidebar.number_input("Liczba podziałów", min_value=2, value=10)
@@ -20,12 +17,36 @@ metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środko
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
-    st.write("Wartość funkcji prostej dla x =", n, "2 wynosi:", funkcja_prosta(n))
+    st.header("Wykres f(x) = x * e^-x")
+    x_plot = m.linspace(0, 10, 500)
+    y_plot = funkcja_prosta(x_plot)
+    
+    fig, ax = plt.subplots()
+    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2, label="Funkcja ciągła")
+    
+    x_div = m.linspace(0, 10, n)
+    y_div = funkcja_prosta(x_div)
+    ax.scatter(x_div, y_div, color='red', zorder=3, label=f"Punkty podziału (n={n})")
+    
+    ax.set_title("Wizualizacja podziału dla funkcji prostej")
+    ax.set_xlabel("Oś X")
+    ax.set_ylabel("f(x)")
+    ax.grid(True, linestyle='--', alpha=0.6)
+    ax.legend()
 
+    st.pyplot(fig)
+-
 with tab2:
-    st.write("Wartość funkcji prostej dla x =", n, "2 wynosi:", funkcja_skomplikowana(n))
-
-
+    st.header("Wykres f(x) = e^x * cos(e^x)")
+    
+    x_comp = m.linspace(0, 2.5, 1000)
+    y_comp = funkcja_skomplikowana(x_comp)
+    
+    fig2, ax2 = plt.subplots()
+    ax2.plot(x_comp, y_comp, color='darkorange')
+    ax2.set_title("Szybkie oscylacje")
+    
+    st.pyplot(fig2)
 
 
 
