@@ -92,9 +92,9 @@ with tab1:
     st.pyplot(fig)
 
     c1, c2, c3 = st.columns(3)
-    c1.markdown(f"🔵 **Suma nadmiarów:**        \n{s_prosta:.6f}")
-    c2.markdown(f"🔴 **Suma niedomiarów:**      \n{d_prosta:.6f}")
-    c3.markdown(f"⚖️ **Błąd przybliżenia:**     \n{s_prosta - d_prosta:.6f}")
+    c1.markdown(f"🔵 **Suma nadmiarów:**        \n    {s_prosta:.6f}")
+    c2.markdown(f"🔴 **Suma niedomiarów:**      \n    {d_prosta:.6f}")
+    c3.markdown(f"⚖️ **Błąd przybliżenia:**     \n    {s_prosta - d_prosta:.6f}")
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -138,6 +138,6 @@ with tab2:
     st.pyplot(fig2)
 
     k1, k2, k3 = st.columns(3)
-    k1.markdown(f"🔵 **Suma nadmiarów:**        \n{s_skompl:.6f}")
-    k2.markdown(f"🔴 **Suma niedomiarów:**      \n{d_skompl:.6f}")
-    k3.markdown(f"⚖️ **Błąd przybliżenia:**     \n{s_skompl - d_skompl:.6f}")
+    k1.markdown(f"🔵 **Suma nadmiarów:**        \n    {s_skompl:.6f}")
+    k2.markdown(f"🔴 **Suma niedomiarów:**      \n    {d_skompl:.6f}")
+    k3.markdown(f"⚖️ **Błąd przybliżenia:**     \n    {s_skompl - d_skompl:.6f}")
