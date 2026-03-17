@@ -8,18 +8,9 @@ def funkcja_prosta(x):
 def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
 
+
+
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
-
-st.sidebar.header("Parametry")
-n = st.sidebar.slider(
-    "Liczba podziałów (n)", 
-    min_value=2, 
-    max_value=50, 
-    value=5, 
-    step=1
-)
-metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środkowa"])
-
 st.markdown("""
     <style>
     /* Kontener listy zakładek */
@@ -41,25 +32,61 @@ st.markdown("""
     """, unsafe_allow_html=True)
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
+
+
+
+st.sidebar.header("Parametry")
+n = st.sidebar.slider(
+    "Liczba podziałów (n)", 
+    min_value=2, 
+    max_value=50, 
+    value=5, 
+    step=1
+)
+metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środkowa"])
+
+
+
+
 with tab1:
     st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
-    x_plot = m.linspace(0, 10, 500)
+    a_simple, b_simple = 0, 10
+    
+    x_plot = m.linspace(a_simple, b_simple, 500)
     y_plot = funkcja_prosta(x_plot)
     
+    dx = (b_simple - a_simple) / n
+    x_bins = m.linspace(a_simple, b_simple, n + 1)
+    
+    if metoda == "Lewostronna":
+        heights = funkcja_prosta(x_bins[:-1]) 
+        bar_color = "skyblue"
+    elif metoda == "Prawostronna":
+        heights = funkcja_prosta(x_bins[1:])
+        bar_color = "salmon"
+    elif metoda == "Środkowa":
+        x_mids = x_bins[:-1] + (dx / 2)
+        heights = funkcja_prosta(x_mids)
+        bar_color = "lightgreen"
+        
     fig, ax = plt.subplots()
-    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2, label="Funkcja ciągła")
-    
-    x_div = m.linspace(0, 10, n)
-    y_div = funkcja_prosta(x_div)
-    ax.scatter(x_div, y_div, color='red', zorder=3, label=f"Punkty podziału (n={n})")
-    
-    ax.set_title("Wizualizacja podziału dla funkcji prostej")
-    ax.set_xlabel("Oś X")
-    ax.set_ylabel("f(x)")
-    ax.grid(True, linestyle='--', alpha=0.6)
-    ax.legend()
 
+    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2, label="Funkcja f(x)")
+    
+
+    ax.bar(x_bins[:-1], heights, width=dx, align='edge',
+           alpha=0.4, color=bar_color, edgecolor='black',
+           label=f"Przybliżenie: {metoda}")
+    
+    ax.set_xlim(a_simple, b_simple)
+    ax.set_ylim(-0.01, 0.4)
+    ax.set_title(f"Metoda Prostokątów: {metoda} (n={n})")
+    ax.legend()
+    ax.grid(True, linestyle='--')
+    
     st.pyplot(fig)
+
+
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
