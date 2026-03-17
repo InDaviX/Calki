@@ -2,24 +2,64 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("Wizualizacja Całkowania Numerycznego")
+st.set_page_config(page_title="Zadanie: Całkowanie Numeryczne", layout="wide")
 
-# Suwak do liczby podziałów
-n = st.slider("Wybierz liczbę podziałów (n)", min_value=2, max_value=100, value=10)
+st.title("🧮 Wizualizacja Całkowania Numerycznego")
+st.markdown("Student: Dawid | Przedmiot: Analiza Matematyczna")
 
-# Definicja funkcji (np. ta "prosta")
-def f(x):
+# --- PARAMETRY W PANELU BOCZNYM ---
+st.sidebar.header("Ustawienia obliczeń")
+n_bins = st.sidebar.slider("Liczba podziałów (n)", 2, 100, 10)
+n_mc = st.sidebar.number_input("Liczba punktów Monte Carlo", 100, 10000, 1000)
+
+# --- DEFINICJA FUNKCJI ---
+def f_simple(x):
     return x**2
 
-x = np.linspace(0, 1, 100)
-x_bins = np.linspace(0, 1, n)
-y_bins = f(x_bins)
+# Rozwiązanie analityczne dla x^2 na [0, 1] to 1/3
+exact_val = 1/3
 
-fig, ax = plt.subplots()
-ax.plot(x, f(x), 'r', label="f(x) = x^2")
-ax.bar(x_bins[:-1], y_bins[:-1], width=(1/n), align='edge', alpha=0.3, edgecolor='blue')
+# --- WIZUALIZACJA METODY PROSTOKĄTÓW ---
+st.subheader("1. Metoda Prostokątów (Wariant Lewostronny)")
 
-st.pyplot(fig)
+x = np.linspace(0, 1, 500)
+y = f_simple(x)
 
-# Tutaj możesz liczyć błąd i wyświetlać go dynamicznie
-st.write(f"Błąd bezwzględny dla n={n} wynosi: ...")
+fig1, ax1 = plt.subplots(figsize=(10, 4))
+ax1.plot(x, y, 'r', label="$f(x) = x^2$")
+
+# Rysowanie prostokątów
+x_bins = np.linspace(0, 1, n_bins + 1)
+dx = 1 / n_bins
+for i in range(n_bins):
+    xi = x_bins[i]
+    yi = f_simple(xi)
+    ax1.add_patch(plt.Rectangle((xi, 0), dx, yi, edgecolor='blue', facecolor='blue', alpha=0.2))
+
+ax1.set_title(f"Podział na {n_bins} prostokątów")
+ax1.legend()
+st.pyplot(fig1)
+
+# --- WIZUALIZACJA MONTE CARLO ---
+st.subheader("2. Metoda Monte Carlo")
+
+x_rand = np.random.uniform(0, 1, n_mc)
+y_rand = np.random.uniform(0, 1, n_mc) # f(x) na [0,1] nie przekracza 1
+under_curve = y_rand <= f_simple(x_rand)
+
+fig2, ax2 = plt.subplots(figsize=(10, 4))
+ax2.plot(x, y, color='black', lw=2)
+ax2.scatter(x_rand[under_curve], y_rand[under_curve], color='green', s=1, alpha=0.5, label="Trafione")
+ax2.scatter(x_rand[~under_curve], y_rand[~under_curve], color='red', s=1, alpha=0.3, label="Chybione")
+ax2.legend()
+st.pyplot(fig2)
+
+# --- WYNIKI ---
+st.divider()
+approx_rect = sum([f_simple(x_bins[i]) * dx for i in range(n_bins)])
+approx_mc = np.sum(under_curve) / n_mc
+
+col1, col2, col3 = st.columns(3)
+col1.metric("Wartość Dokładna", f"{exact_val:.4f}")
+col2.metric("Metoda Prostokątów", f"{approx_rect:.4f}", f"{approx_rect - exact_val:.4f}", delta_color="inverse")
+col3.metric("Metoda Monte Carlo", f"{approx_mc:.4f}", f"{approx_mc - exact_val:.4f}", delta_color="inverse")
