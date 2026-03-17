@@ -17,8 +17,7 @@ metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środko
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
-    st.header("Wykres f(x) = x * e^-x")
-    st.latex(r"f(x) = x \cdot e^{-x}")
+    st.markdown(f"Obliczamy teraz całkę dla funkcji prostej $f(x) = x \cdot e^{{-x}}$ przy $n = {n}$.")
     x_plot = m.linspace(0, 10, 500)
     y_plot = funkcja_prosta(x_plot)
     
