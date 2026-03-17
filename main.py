@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as m
 import matplotlib.pyplot as plt
 
+
 def funkcja_prosta(x):
     return x * m.exp(-1 * x)
 
@@ -10,93 +11,126 @@ def funkcja_skomplikowana(x):
 
 
 
+
+
+
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 st.markdown("""
     <style>
-    /* Kontener listy zakładek */
     div[data-baseweb="tab-list"] {
         width: 100%;
         gap: 0px;
     }
-    /* Pojedynczy przycisk zakładki */
     div[data-baseweb="tab-list"] button {
         flex: 1;
         text-align: center;
     }
-    /* Opcjonalnie: zmiana wielkości czcionki w zakładkach */
     div[data-baseweb="tab-list"] button p {
         font-size: 20px;
         font-weight: bold;
     }
     </style>
     """, unsafe_allow_html=True)
-tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
+
 
 
 
 
 st.sidebar.header("Parametry")
-n = st.sidebar.slider(
-    "Liczba podziałów (n)", 
-    min_value=2, 
-    max_value=50, 
-    value=5, 
-    step=1
-)
-metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środkowa"])
+n = st.sidebar.slider("Liczba podziałów (n)", min_value=2, max_value=500, value=10, step=1)
+metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Środkowa", "Prawostronna"])
+tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
+
+
 
 
 
 
 with tab1:
     st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
-    a_simple, b_simple = 0, 10
     
-    x_plot = m.linspace(a_simple, b_simple, 500)
+    a, b = 0, 10
+    x_plot = m.linspace(a, b, 500)
     y_plot = funkcja_prosta(x_plot)
     
-    dx = (b_simple - a_simple) / n
-    x_bins = m.linspace(a_simple, b_simple, n + 1)
+    dx = (b - a) / n
+    x_bins = m.linspace(a, b, n + 1)
     
     if metoda == "Lewostronna":
-        heights = funkcja_prosta(x_bins[:-1]) 
-        bar_color = "skyblue"
+        heights = funkcja_prosta(x_bins[:-1])
     elif metoda == "Prawostronna":
         heights = funkcja_prosta(x_bins[1:])
-        bar_color = "salmon"
     elif metoda == "Środkowa":
-        x_mids = x_bins[:-1] + (dx / 2)
-        heights = funkcja_prosta(x_mids)
-        bar_color = "lightgreen"
+        heights = funkcja_prosta(x_bins[:-1] + (dx / 2))
         
     fig, ax = plt.subplots()
-
-    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2, label="Funkcja f(x)")
+    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
     
+    for i in range(n):
+        xi = x_bins[i]
+        xf = x_bins[i+1]
+        h = heights[i]
+        
+        step_x = m.linspace(xi, xf, 10)
+        step_f = funkcja_prosta(step_x)
+        step_h = m.full_like(step_x, h)
+        
+        ax.bar(xi, h, width=dx, align='edge', color='lightgray', edgecolor='black', alpha=0.3)
+        
+        ax.fill_between(step_x, step_f, step_h, where=(step_h > step_f), color='cyan', alpha=0.6, interpolate=True)
+        ax.fill_between(step_x, step_h, step_f, where=(step_f > step_h), color='red', alpha=0.6, interpolate=True)
 
-    ax.bar(x_bins[:-1], heights, width=dx, align='edge',
-           alpha=0.4, color=bar_color, edgecolor='black',
-           label=f"Przybliżenie: {metoda}")
-    
-    ax.set_xlim(a_simple, b_simple)
+    ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
     ax.set_title(f"Metoda Prostokątów: {metoda} (n={n})")
-    ax.legend()
-    ax.grid(True, linestyle='--')
+    ax.grid(True, linestyle='--', alpha=0.6)
     
     st.pyplot(fig)
+
+
+
+
 
 
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
     
-    x_comp = m.linspace(0, 2.5, 1000)
-    y_comp = funkcja_skomplikowana(x_comp)
+    a_c, b_c = 0, 2.5
+    x_comp_plot = m.linspace(a_c, b_c, 2000)
+    y_comp_plot = funkcja_skomplikowana(x_comp_plot)
     
+    dx_c = (b_c - a_c) / n
+    x_bins_c = m.linspace(a_c, b_c, n + 1)
+    
+    if metoda == "Lewostronna":
+        heights_c = funkcja_skomplikowana(x_bins_c[:-1])
+    elif metoda == "Prawostronna":
+        heights_c = funkcja_skomplikowana(x_bins_c[1:])
+    elif metoda == "Środkowa":
+        heights_c = funkcja_skomplikowana(x_bins_c[:-1] + (dx_c / 2))
+        
     fig2, ax2 = plt.subplots()
-    ax2.plot(x_comp, y_comp, color='darkorange')
-    ax2.set_title("Szybkie oscylacje")
+    ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
+    
+    for i in range(n):
+        xi_c = x_bins_c[i]
+        xf_c = x_bins_c[i+1]
+        h_c = heights_c[i]
+        
+        step_x_c = m.linspace(xi_c, xf_c, 10)
+        step_f_c = funkcja_skomplikowana(step_x_c)
+        step_h_c = m.full_like(step_x_c, h_c)
+        
+        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgray', edgecolor='black', alpha=0.2)
+        
+        ax2.fill_between(step_x_c, step_f_c, step_h_c, where=(step_h_c > step_f_c), color='cyan', alpha=0.5, interpolate=True)
+        ax2.fill_between(step_x_c, step_h_c, step_f_c, where=(step_f_c > step_h_c), color='red', alpha=0.5, interpolate=True)
+
+    ax2.set_xlim(a_c, b_c)
+    ax2.set_ylim(-13, 13)
+    ax2.set_title(f"Szybkie oscylacje: {metoda} (n={n})")
+    ax2.grid(True)
     
     st.pyplot(fig2)
 
