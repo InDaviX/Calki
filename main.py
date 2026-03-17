@@ -27,7 +27,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.sidebar.header("Parametry")
-n = st.sidebar.slider("Liczba podziałów (n)", min_value=10, max_value=80, value=10, step=1)
+n = st.sidebar.slider("Liczba podziałów (n)", min_value=5, max_value=80, value=20, step=1)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Środkowa", "Prawostronna"])
 pokaz_bledy = st.sidebar.toggle("Pokaż nadmiary i niedomiary", value=True)
 
