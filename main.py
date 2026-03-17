@@ -9,6 +9,7 @@ def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
+
 st.markdown("""
     <style>
     div[data-baseweb="tab-list"] {
@@ -23,13 +24,29 @@ st.markdown("""
         font-size: 20px;
         font-weight: bold;
     }
+    /* Margines pod selectboxem w sidebarze */
+    div[data-testid="stSelectbox"] {
+        margin-bottom: 30px;
+    }
+    /* Wyśrodkowanie tekstu obok switcha */
+    .toggle-label {
+        font-size: 16px;
+        margin-top: 5px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
 st.sidebar.header("Parametry")
 n = st.sidebar.slider("Liczba podziałów (n)", min_value=5, max_value=80, value=20, step=1)
 metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Środkowa", "Prawostronna"])
-pokaz_bledy = st.sidebar.toggle("Pokaż nadmiary i niedomiary", value=True)
+
+col_text, col_toggle = st.sidebar.columns([3, 1])
+with col_text:
+    st.markdown('<p class="toggle-label">Pokaż nadmiary i niedomiary</p>', unsafe_allow_html=True)
+with col_toggle:
+    pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
+
+st.sidebar.divider()
 
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
@@ -53,15 +70,12 @@ with tab1:
     fig, ax = plt.subplots()
     ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
     
-    s_prosta = 0
-    d_prosta = 0
+    s_prosta, d_prosta = 0, 0
     
     for i in range(n):
         xi, xf, h = x_bins[i], x_bins[i+1], heights[i]
-        
         step_x = m.linspace(xi, xf, 100)
         step_f = funkcja_prosta(step_x)
-        
         diff = h - step_f
         s_prosta += m.sum(m.maximum(0, diff)) * (dx / 100)
         d_prosta += m.sum(m.maximum(0, -diff)) * (dx / 100)
@@ -78,9 +92,9 @@ with tab1:
     st.pyplot(fig)
 
     c1, c2, c3 = st.columns(3)
-    c1.markdown(f"🔵 **Suma nadmiarów:**        \n{s_prosta:.6f}")
-    c2.markdown(f"🔴 **Suma niedomiarów:**      \n{d_prosta:.6f}")
-    c3.markdown(f"⚖️ **Błąd przybliżenia:**     \n{s_prosta - d_prosta:.6f}")
+    c1.markdown(f"🔵 **Suma nadmiarów:** \n{s_prosta:.6f}")
+    c2.markdown(f"🔴 **Suma niedomiarów:** \n{d_prosta:.6f}")
+    c3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_prosta - d_prosta:.6f}")
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -102,15 +116,12 @@ with tab2:
     fig2, ax2 = plt.subplots()
     ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
     
-    s_skompl = 0
-    d_skompl = 0
+    s_skompl, d_skompl = 0, 0
     
     for i in range(n):
         xi_c, xf_c, h_c = x_bins_c[i], x_bins_c[i+1], heights_c[i]
-        
         step_x_c = m.linspace(xi_c, xf_c, 100)
         step_f_c = funkcja_skomplikowana(step_x_c)
-        
         diff_c = h_c - step_f_c
         s_skompl += m.sum(m.maximum(0, diff_c)) * (dx_c / 100)
         d_skompl += m.sum(m.maximum(0, -diff_c)) * (dx_c / 100)
@@ -127,74 +138,6 @@ with tab2:
     st.pyplot(fig2)
 
     k1, k2, k3 = st.columns(3)
-    k1.markdown(f"🔵 **Suma nadmiarów:**       \n{s_skompl:.6f}")
-    k2.markdown(f"🔴 **Suma niedomiarów:**     \n{d_skompl:.6f}")
-    k3.markdown(f"⚖️ **Błąd przybliżenia:**    \n{s_skompl - d_skompl:.6f}")
-
-
-
-
-
-
-
-# st.set_page_config(page_title="Zadanie: Całkowanie Numeryczne", layout="wide")
-
-# st.title("🧮 Wizualizacja Całkowania Numerycznego")
-# st.markdown("Student: Dawid | Przedmiot: Analiza Matematyczna")
-
-# # --- PARAMETRY W PANELU BOCZNYM ---
-# st.sidebar.header("Ustawienia obliczeń")
-# n_bins = st.sidebar.slider("Liczba podziałów (n)", 2, 100, 10)
-# n_mc = st.sidebar.number_input("Liczba punktów Monte Carlo", 100, 10000, 1000)
-
-# # --- DEFINICJA FUNKCJI ---
-# def f_simple(x):
-#     return x**2
-
-# # Rozwiązanie analityczne dla x^2 na [0, 1] to 1/3
-# exact_val = 1/3
-
-# # --- WIZUALIZACJA METODY PROSTOKĄTÓW ---
-# st.subheader("1. Metoda Prostokątów (Wariant Lewostronny)")
-
-# x = np.linspace(0, 1, 500)
-# y = f_simple(x)
-
-# fig1, ax1 = plt.subplots(figsize=(10, 4))
-# ax1.plot(x, y, 'r', label="$f(x) = x^2$")
-
-# # Rysowanie prostokątów
-# x_bins = np.linspace(0, 1, n_bins + 1)
-# dx = 1 / n_bins
-# for i in range(n_bins):
-#     xi = x_bins[i]
-#     yi = f_simple(xi)
-#     ax1.add_patch(plt.Rectangle((xi, 0), dx, yi, edgecolor='blue', facecolor='blue', alpha=0.2))
-
-# ax1.set_title(f"Podział na {n_bins} prostokątów")
-# ax1.legend()
-# st.pyplot(fig1)
-
-# # --- WIZUALIZACJA MONTE CARLO ---
-# st.subheader("2. Metoda Monte Carlo")
-
-# x_rand = np.random.uniform(0, 1, n_mc)
-# y_rand = np.random.uniform(0, 1, n_mc) # f(x) na [0,1] nie przekracza 1
-# under_curve = y_rand <= f_simple(x_rand)
-
-# fig2, ax2 = plt.subplots(figsize=(10, 4))
-# ax2.plot(x, y, color='black', lw=2)
-# ax2.scatter(x_rand[under_curve], y_rand[under_curve], color='green', s=1, alpha=0.5, label="Trafione")
-# ax2.scatter(x_rand[~under_curve], y_rand[~under_curve], color='red', s=1, alpha=0.3, label="Chybione")
-# ax2.legend()
-# st.pyplot(fig2)
-
-# # --- WYNIKI ---
-# st.divider()
-# approx_rect = sum([f_simple(x_bins[i]) * dx for i in range(n_bins)])
-# approx_mc = np.sum(under_curve) / n_mc
-
-# col1, col2, col3 = st.columns(3)
-# col1.metric("Wartość Dokładna", f"{exact_val:.4f}")
-# col2.metric("Metoda Prostokątów", f"{approx_rect:.4f}", f"{approx_rect - exact_val:.4f}", delta_color="inverse")
-# col3.metric("Metoda Monte Carlo", f"{approx_mc:.4f}", f"{approx_mc - exact_val:.4f}", delta_color="inverse")
+    k1.markdown(f"🔵 **Suma nadmiarów:** \n{s_skompl:.6f}")
+    k2.markdown(f"🔴 **Suma niedomiarów:** \n{d_skompl:.6f}")
+    k3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_skompl - d_skompl:.6f}")
