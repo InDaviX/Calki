@@ -17,7 +17,7 @@ metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Prawostronna", "Środko
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
-    st.markdown(r"### 📈 Wykres i wzór funkcji prostej: $\small f(x) = x \cdot e^{-x}$")
+    st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
     x_plot = m.linspace(0, 10, 500)
     y_plot = funkcja_prosta(x_plot)
     
@@ -37,7 +37,7 @@ with tab1:
     st.pyplot(fig)
 
 with tab2:
-    st.header("Wykres f(x) = e^x * cos(e^x)")
+    st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
     st.latex(r"f(x) = e^x \cdot \cos(e^x)")
     
     x_comp = m.linspace(0, 2.5, 1000)
