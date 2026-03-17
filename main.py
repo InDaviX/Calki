@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 
-col1, col2 = st.columns(2)
-col1.write("To jest lewa kolumna")
-col2.write("To jest prawa kolumna")
 
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 with tab1:
