@@ -2,14 +2,21 @@ import streamlit as st
 import numpy as m
 import matplotlib.pyplot as plt
 
+
+
+
+
 def funkcja_prosta(x):
     return x * m.exp(-1 * x)
 
 def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
 
-st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 
+
+
+
+st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 st.markdown("""
     <style>
     div[data-baseweb="tab-list"] {
@@ -61,11 +68,10 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-
+tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 st.sidebar.header("Parametry")
 n = st.sidebar.slider("Liczba podziałów (n)", min_value=5, max_value=80, value=20, step=1)
 metoda_rect = st.sidebar.selectbox("Metoda Prostokątów", ["Lewostronna", "Środkowa", "Prawostronna"])
-
 col_text, col_toggle = st.sidebar.columns([3, 1])
 with col_text:
     st.markdown('<p class="toggle-label">Pokaż nadmiary i niedomiary</p>', unsafe_allow_html=True)
@@ -73,7 +79,12 @@ with col_toggle:
     pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
 st.sidebar.divider()
 
-tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
+
+
+
+
+
+
 
 with tab1:
     st.markdown(r"<span style='font-size: 22px;'>📈 Analiza funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
@@ -152,6 +163,12 @@ with tab1:
             <hr style="border:0.5px solid var(--border-color)">
             <p><b>Metoda Trapezów:</b><br>
             🔵 Nadmiar: {s_pt:.10f}<br>🔴 Niedomiar: {d_pt:.10f}<br>⚖️ Błąd: {res_trap - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
+
+
+
+
+
+
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Analiza funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
