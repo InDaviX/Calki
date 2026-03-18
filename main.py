@@ -173,7 +173,7 @@ with tab2:
     ax2.tick_params(colors='gray')
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
-    ax2.set_title(f"Szybkie oscylacje: {metoda} (n={n})", color='gray')
+    ax.set_title(f"Metoda {metoda} dla n={n}", color='gray')
     ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
 
