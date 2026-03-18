@@ -397,4 +397,21 @@ st.write("""
          Metoda trapezów jest w sumie sprytna, ale w tym wariancie ta metoda opiera kąt góry trapezu na punktach pobliskich, co jest tym razem poddatne bardziej
          na zachowanie drugiej pochodnej, czyli czy nasza funkcja zagina się do góry czy do dołu. Myślę że nie głupią opcją, byłoby wyliczać pochodna z funkcji w punkcie
          środka przedziału i ustawiać trapez pod tym kątem (w sensie żeby obliczyć kąt nachylenia funkcji w punkcie środka przedziału).
+         Z wykresów wynika że zapewnia ona nieco mniejszą dokładność (zgadza się to z moimi obserwacjami, choć może być winą przyjętej metody badawczej),
+         ale za to jest szybsza, przynajmniej w kontekscie bazowym. Czas potrzebny dla metody prostokątów i trapezów rośnie z podobną prędkością,
+         ale metoda trapezów jest szybsza o jakąś stałą. To stanowi, że będzie się nadawać bardziej do wielokrotnego obliczania prostych całek, 
+         kiedy metoda prostokątów będzie lepsza dla jednej, ale bardzo złożonej całki.
+         """)
+st.write("""
+         Metoda monte carlo szczerze mnie zawiodła. Pamiętam jak przybliżałem wartość Pi używając losowych punktów i wyniki potrafiły być zaskakująco dokładne,
+         tymczasem na całkowaniu nie widać jej potęgi. Wykresy sugerują że precyzja przybliżenia rośnie dość powoli, kiedy czas potrzebny rośnie dość szybko.
+         Zastanawia mnie realne tempo tego wzrostu, bo próbowałem zwiększać dokładnośc wykresów i mimo że monte carlo wygląda jakby rosło logarytmicznie,
+         to nawet dla dość dużych złożoności nadal wyprzedza funkcje liniowe w swoim wzroście (może liniowe ją wyprzedzą w przypadku bardzo dużych liczb, znacznie dalej na prawo na wykresie).
+         Ostatecznie cała siła monte carlo zależy od tego, jak umieścimy obszar na którym rozrzucamy punkty. Myślę że w przypadku moich wykresów, te punkty
+         mogą być rozrzucone troche za daleko (za duży head space zostawiony), ale metoda, która wymaga żeby się nią troszczyć jak niemowlęciem, żeby tylko zadziałała, to słaba metoda.
+         Mimo że nie działa świetnie, to nadal fascynującym faktem jest to, że w ogóle działa. Pradoksalne jest natomiast to, że niejednokrotnie produkuje dokładniejsze wyniki dla mniejszej liczby punktów.
+         """)
+st.write("""
+         Kończąc wywód - ja bym używał metody prostokątów wyrównywanej do środka przedziału. Metoda trapezów jest delikatnie lżejsza, więc nadaje
+         się lepiej do wielu prostych funkcji. Monte carlo wymaga specjalnej troski, ale przez swoją losowość przypomina hazard, więc i tak jest moim ulubieńcem
          """)
