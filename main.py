@@ -32,12 +32,12 @@ st.markdown("""
         margin-top: 5px;
     }
     .result-label {
-        font-size: 18px;
+        font-size: 16px;
         color: var(--text-color);
-        opacity: 0.8;
+        opacity: 0.7;
     }
     .result-value {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: bold;
         color: var(--text-color);
     }
@@ -45,7 +45,7 @@ st.markdown("""
         position: fixed;
         top: 100px;
         right: 30px;
-        width: 280px;
+        width: 300px;
         padding: 20px;
         background-color: var(--secondary-background-color);
         color: var(--text-color);
@@ -76,7 +76,6 @@ tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
     st.markdown(r"<span style='font-size: 22px;'>📈 Analiza funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
-    
     a, b = 0, 10
     x_plot = m.linspace(a, b, 500)
     y_plot = funkcja_prosta(x_plot)
@@ -108,8 +107,14 @@ with tab1:
         if pokaz_bledy:
             ax1.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.4)
             ax1.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.4)
-    ax1.set_xlim(a, b); ax1.set_ylim(-0.01, 0.4); ax1.set_title(f"Prostokąty: {metoda_rect}"); ax1.grid(True, alpha=0.3)
+    ax1.set_xlim(a, b); ax1.set_ylim(-0.01, 0.4); ax1.grid(True, alpha=0.3)
     st.pyplot(fig1)
+
+    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10} = " + f"{y_ana:.10f}")
+    
+    r1, r2 = st.columns(2)
+    r1.markdown(f"<p class='result-label'>Przybliżenie Prostokątów:</p><p class='result-value'>{res_rect:.10f}</p>", unsafe_allow_html=True)
+    r2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana:.10f}</p>", unsafe_allow_html=True)
 
     st.divider()
     
@@ -133,23 +138,21 @@ with tab1:
         if pokaz_bledy:
             ax1t.fill_between(sx, sf, ltrap, where=(ltrap > sf), color='cyan', alpha=0.4)
             ax1t.fill_between(sx, ltrap, sf, where=(sf > ltrap), color='red', alpha=0.4)
-    ax1t.set_xlim(a, b); ax1t.set_ylim(-0.01, 0.4); ax1t.set_title("Wizualizacja Trapezów"); ax1t.grid(True, alpha=0.3)
+    ax1t.set_xlim(a, b); ax1t.set_ylim(-0.01, 0.4); ax1t.grid(True, alpha=0.3)
     st.pyplot(fig1t)
+
+    t1, t2 = st.columns(2)
+    t1.markdown(f"<p class='result-label'>Przybliżenie Trapezów:</p><p class='result-value'>{res_trap:.10f}</p>", unsafe_allow_html=True)
+    t2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana:.10f}</p>", unsafe_allow_html=True)
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p><b>Prostokąty ({metoda_rect}):</b><br>🔵 Nadmiar: {s_p:.5f}<br>🔴 Niedomiar: {d_p:.5f}</p>
+            <p style='font-size:14px'><b>Metoda Prostokątów:</b><br>⚖️ Błąd: {res_rect - y_ana:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
-            <p><b>Trapezy:</b><br>🔵 Nadmiar: {s_pt:.5f}<br>🔴 Niedomiar: {d_pt:.5f}</p></div>""", unsafe_allow_html=True)
-
-    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = " + f"{y_ana:.6f}")
-    c1, c2 = st.columns(2)
-    c1.markdown(f"<p class='result-label'>Wynik Trapezów:</p><p class='result-value'>{res_trap:.6f}</p>", unsafe_allow_html=True)
-    c2.markdown(f"<p class='result-label'>Wynik Prostokątów:</p><p class='result-value'>{res_rect:.6f}</p>", unsafe_allow_html=True)
+            <p style='font-size:14px'><b>Metoda Trapezów:</b><br>⚖️ Błąd: {res_trap - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Analiza funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
-    
     a_c, b_c = 0, 2.5
     x_c_plot = m.linspace(a_c, b_c, 2000)
     y_c_plot = funkcja_skomplikowana(x_c_plot)
@@ -163,7 +166,6 @@ with tab2:
         h_rc = funkcja_skomplikowana(x_bc[1:])
     else:
         h_rc = funkcja_skomplikowana(x_bc[:-1] + dx_c/2)
-    
     res_rc = m.sum(h_rc) * dx_c
 
     st.subheader(f"1. Metoda Prostokątów ({metoda_rect})")
@@ -181,8 +183,14 @@ with tab2:
         if pokaz_bledy:
             ax2.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.4)
             ax2.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.4)
-    ax2.set_xlim(a_c, b_c); ax2.set_ylim(-13, 13); ax2.set_title(f"Prostokąty: {metoda_rect}"); ax2.grid(True, alpha=0.2)
+    ax2.set_xlim(a_c, b_c); ax2.set_ylim(-13, 13); ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
+
+    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5} = " + f"{y_ana_c:.10f}")
+
+    r1_c, r2_c = st.columns(2)
+    r1_c.markdown(f"<p class='result-label'>Przybliżenie Prostokątów:</p><p class='result-value'>{res_rc:.10f}</p>", unsafe_allow_html=True)
+    r2_c.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana_c:.10f}</p>", unsafe_allow_html=True)
 
     st.divider()
 
@@ -206,16 +214,15 @@ with tab2:
         if pokaz_bledy:
             ax2t.fill_between(sx, sf, ltrap, where=(ltrap > sf), color='cyan', alpha=0.4)
             ax2t.fill_between(sx, ltrap, sf, where=(sf > ltrap), color='red', alpha=0.4)
-    ax2t.set_xlim(a_c, b_c); ax2t.set_ylim(-13, 13); ax2t.set_title("Wizualizacja Trapezów"); ax2t.grid(True, alpha=0.2)
+    ax2t.set_xlim(a_c, b_c); ax2t.set_ylim(-13, 13); ax2t.grid(True, alpha=0.2)
     st.pyplot(fig2t)
+
+    t1_c, t2_c = st.columns(2)
+    t1_c.markdown(f"<p class='result-label'>Przybliżenie Trapezów:</p><p class='result-value'>{res_tc:.10f}</p>", unsafe_allow_html=True)
+    t2_c.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana_c:.10f}</p>", unsafe_allow_html=True)
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p><b>Prostokąty ({metoda_rect}):</b><br>🔵 Nadmiar: {s_c:.5f}<br>🔴 Niedomiar: {d_c:.5f}</p>
+            <p style='font-size:14px'><b>Metoda Prostokątów:</b><br>⚖️ Błąd: {res_rc - y_ana_c:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
-            <p><b>Trapezy:</b><br>🔵 Nadmiar: {s_ct:.5f}<br>🔴 Niedomiar: {d_ct:.5f}</p></div>""", unsafe_allow_html=True)
-
-    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = " + f"{y_ana_c:.6f}")
-    k1, k2 = st.columns(2)
-    k1.markdown(f"<p class='result-label'>Wynik Trapezów:</p><p class='result-value'>{res_tc:.6f}</p>", unsafe_allow_html=True)
-    k2.markdown(f"<p class='result-label'>Wynik Prostokątów:</p><p class='result-value'>{res_rc:.6f}</p>", unsafe_allow_html=True)
+            <p style='font-size:14px'><b>Metoda Trapezów:</b><br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
