@@ -148,6 +148,6 @@ with tab2:
 
     if pokaz_bledy:
         k1, k2, k3 = st.columns(3)
-        k1.markdown(f"🔵 **Suma nadmiarów:** \n{s_skompl:.6f}")
-        k2.markdown(f"🔴 **Suma niedomiarów:** \n{d_skompl:.6f}")
-        k3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_skompl - d_skompl:.6f}")
+        k1.markdown(f"🔵 **Suma nadmiarów:** \t\n{s_skompl:.6f}")
+        k2.markdown(f"🔴 **Suma niedomiarów:** \t\n{d_skompl:.6f}")
+        k3.markdown(f"⚖️ **Błąd przybliżenia:** \t\n{s_skompl - d_skompl:.6f}")
