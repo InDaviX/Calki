@@ -287,7 +287,7 @@ with tab2:
     res_mc_c = pole_box_c * (hits_c / n_mc)
 
     fig2mc, ax2mc = plt.subplots()
-    ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=2)
+    ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=20)
     
     mask_hit = is_hit_pos | is_hit_neg
     ax2mc.scatter(x_mc_c[mask_hit], y_mc_c[mask_hit], color='green', s=2, alpha=0.5)
