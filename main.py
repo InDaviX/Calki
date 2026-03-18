@@ -81,7 +81,9 @@ with col_text:
 with col_toggle:
     pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
 st.sidebar.divider()
-n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=25000, value=5000, step=100)
+
+# Nowe parametry dla Monte Carlo
+n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=5000, value=1000, step=100)
 
 
 
@@ -162,6 +164,7 @@ with tab1:
     st.divider()
 
     st.subheader("3. Metoda Monte Carlo")
+    # Definicja obszaru rzutu
     y_min_mc, y_max_mc = 0, 0.4
     x_mc = m.random.uniform(a, b, n_mc)
     y_mc = m.random.uniform(y_min_mc, y_max_mc, n_mc)
@@ -273,11 +276,13 @@ with tab2:
     st.divider()
 
     st.subheader("3. Metoda Monte Carlo")
+    # Funkcja skomplikowana ma wartości ujemne, więc box musi być szerszy
     y_min_mc_c, y_max_mc_c = -13, 13
     x_mc_c = m.random.uniform(a_c, b_c, n_mc)
     y_mc_c = m.random.uniform(y_min_mc_c, y_max_mc_c, n_mc)
     f_val_mc_c = funkcja_skomplikowana(x_mc_c)
     
+    # Hit dla funkcji ze znakiem: punkt między 0 a f(x)
     is_hit_pos = (y_mc_c > 0) & (y_mc_c <= f_val_mc_c)
     is_hit_neg = (y_mc_c < 0) & (y_mc_c >= f_val_mc_c)
     hits_c = m.sum(is_hit_pos) - m.sum(is_hit_neg)
@@ -288,6 +293,7 @@ with tab2:
     fig2mc, ax2mc = plt.subplots()
     ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
     
+    # Wizualizacja punktów "trafionych" (pod/nad wykresem względem osi 0)
     mask_hit = is_hit_pos | is_hit_neg
     ax2mc.scatter(x_mc_c[mask_hit], y_mc_c[mask_hit], color='green', s=2, alpha=0.5)
     ax2mc.scatter(x_mc_c[~mask_hit], y_mc_c[~mask_hit], color='orange', s=2, alpha=0.5)
