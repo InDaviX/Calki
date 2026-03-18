@@ -9,7 +9,6 @@ def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
-
 st.markdown("""
     <style>
     div[data-baseweb="tab-list"] {
@@ -24,11 +23,9 @@ st.markdown("""
         font-size: 20px;
         font-weight: bold;
     }
-    /* Margines pod selectboxem w sidebarze */
     div[data-testid="stSelectbox"] {
         margin-bottom: 30px;
     }
-    /* Wyśrodkowanie tekstu obok switcha */
     .toggle-label {
         font-size: 16px;
         margin-top: 5px;
@@ -45,7 +42,6 @@ with col_text:
     st.markdown('<p class="toggle-label">Pokaż nadmiary i niedomiary</p>', unsafe_allow_html=True)
 with col_toggle:
     pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
-
 st.sidebar.divider()
 
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
@@ -66,6 +62,9 @@ with tab1:
         heights = funkcja_prosta(x_bins[1:])
     elif metoda == "Środkowa":
         heights = funkcja_prosta(x_bins[:-1] + (dx / 2))
+        
+    wynik_num_1 = m.sum(heights) * dx
+    wynik_ana_1 = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
         
     fig, ax = plt.subplots()
     ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
@@ -91,10 +90,14 @@ with tab1:
     ax.grid(True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
 
-    c1, c2, c3 = st.columns(3)
-    c1.markdown(f"🔵 **Suma nadmiarów:**        \n    {s_prosta:.6f}")
-    c2.markdown(f"🔴 **Suma niedomiarów:**      \n    {d_prosta:.6f}")
-    c3.markdown(f"⚖️ **Błąd przybliżenia:**     \n    {s_prosta - d_prosta:.6f}")
+    st.latex(r"I = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10} \approx " + f"{wynik_ana_1:.6f}")
+    st.write(f"**Wynik numeryczny ({metoda}):** {wynik_num_1:.6f}")
+
+    if pokaz_bledy:
+        c1, c2, c3 = st.columns(3)
+        c1.markdown(f"🔵 **Suma nadmiarów:** \n{s_prosta:.6f}")
+        c2.markdown(f"🔴 **Suma niedomiarów:** \n{d_prosta:.6f}")
+        c3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_prosta - d_prosta:.6f}")
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -112,6 +115,9 @@ with tab2:
         heights_c = funkcja_skomplikowana(x_bins_c[1:])
     elif metoda == "Środkowa":
         heights_c = funkcja_skomplikowana(x_bins_c[:-1] + (dx_c / 2))
+        
+    wynik_num_2 = m.sum(heights_c) * dx_c
+    wynik_ana_2 = m.sin(m.exp(b_c)) - m.sin(m.exp(a_c))
         
     fig2, ax2 = plt.subplots()
     ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
@@ -137,7 +143,11 @@ with tab2:
     ax2.grid(True)
     st.pyplot(fig2)
 
-    k1, k2, k3 = st.columns(3)
-    k1.markdown(f"🔵 **Suma nadmiarów:**        \n    {s_skompl:.6f}")
-    k2.markdown(f"🔴 **Suma niedomiarów:**      \n    {d_skompl:.6f}")
-    k3.markdown(f"⚖️ **Błąd przybliżenia:**     \n    {s_skompl - d_skompl:.6f}")
+    st.latex(r"I = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5} \approx " + f"{wynik_ana_2:.6f}")
+    st.write(f"**Wynik numeryczny ({metoda}):** {wynik_num_2:.6f}")
+
+    if pokaz_bledy:
+        k1, k2, k3 = st.columns(3)
+        k1.markdown(f"🔵 **Suma nadmiarów:** \n{s_skompl:.6f}")
+        k2.markdown(f"🔴 **Suma niedomiarów:** \n{d_skompl:.6f}")
+        k3.markdown(f"⚖️ **Błąd przybliżenia:** \n{s_skompl - d_skompl:.6f}")
