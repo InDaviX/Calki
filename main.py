@@ -162,7 +162,6 @@ with tab1:
     st.divider()
 
     st.subheader("3. Metoda Monte Carlo")
-    # Definicja obszaru rzutu
     y_min_mc, y_max_mc = 0, 0.4
     x_mc = m.random.uniform(a, b, n_mc)
     y_mc = m.random.uniform(y_min_mc, y_max_mc, n_mc)
@@ -311,48 +310,39 @@ with tab2:
             🔵 Nadmiar: {s_ct:.10f}<br>🔴 Niedomiar: {d_ct:.10f}<br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
             <p><b>Metoda Monte Carlo:</b><br>
-            <span>🟢 Pod wykresem (hit): {m.sum(mask_hit)}</span><br>
-            <span>🟠 Nad wykresem (miss): {n_mc - m.sum(mask_hit)}</span><br>
+            <span>🟢 Pod wykresem: {m.sum(mask_hit)}</span><br>
+            <span>🟠 Nad wykresem: {n_mc - m.sum(mask_hit)}</span><br>
             ⚖️ Błąd: {res_mc_c - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
 
-# --- ZAKTUALIZOWANA SEKCJA BENCHMARKU ---
+# --- ZAKTUALIZOWANE WYKRESY BENCHMARKU ---
 st.divider()
-st.header("🏁 Zestawienie Wydajności i Dokładności")
-st.markdown("Uśredniona analiza porównawcza (każdy punkt to średnia z 20 pomiarów).")
+st.header("🏁 Zestawienie Wydajności")
 
-# Zwiększamy skalę n, aby czas był mierzalny dla NumPy
-complexity_steps = [50, 100, 250, 500, 1000, 2500, 5000]
+complexity_steps = [10, 50, 100, 250, 500, 1000]
 err_rect, err_trap, err_mc = [], [], []
 time_rect, time_trap, time_mc = [], [], []
-
-# Pętla z uśrednianiem (Smooth Benchmarking)
-reps = 20 
 
 for step in complexity_steps:
     t_r_tmp, t_t_tmp, t_m_tmp = [], [], []
     e_r_tmp, e_t_tmp, e_m_tmp = [], [], []
     
-    for _ in range(reps):
-        # 1. Prostokąty
+    for _ in range(10): # Średnia z 10 prób dla stabilności
+        # Prostokąty
         t0 = time.perf_counter()
         x_b = m.linspace(a, b, step + 1)
-        # Używamy metody środkowej dla benchmarku
-        h_b = funkcja_prosta(x_b[:-1] + (b-a)/(2*step))
-        r_rect = m.sum(h_b) * (b-a)/step
+        r_rect = m.sum(funkcja_prosta(x_b[:-1] + (b-a)/(2*step))) * (b-a)/step
         t_r_tmp.append(time.perf_counter() - t0)
         e_r_tmp.append(abs(r_rect - y_ana))
 
-        # 2. Trapezy
+        # Trapezy
         t0 = time.perf_counter()
         h_t = funkcja_prosta(x_b)
         r_trap = ((b-a)/(2*step)) * (h_t[0] + 2 * m.sum(h_t[1:-1]) + h_t[-1])
         t_t_tmp.append(time.perf_counter() - t0)
         e_t_tmp.append(abs(r_trap - y_ana))
 
-        # 3. Monte Carlo (n_points = step * 10)
-        # Zmniejszamy mnożnik, aby MC nie zdominowało wykresu czasu 
-        # ale miało "naturalny" przebieg
-        points_mc = step * 50
+        # Monte Carlo (n_points = step * 100)
+        points_mc = step * 100
         t0 = time.perf_counter()
         x_m = m.random.uniform(a, b, points_mc)
         y_m = m.random.uniform(0, 0.4, points_mc)
@@ -360,7 +350,6 @@ for step in complexity_steps:
         t_m_tmp.append(time.perf_counter() - t0)
         e_m_tmp.append(abs(r_mc - y_ana))
 
-    # Zbieramy średnie
     time_rect.append(m.mean(t_r_tmp) * 1000)
     time_trap.append(m.mean(t_t_tmp) * 1000)
     time_mc.append(m.mean(t_m_tmp) * 1000)
@@ -371,27 +360,26 @@ for step in complexity_steps:
 col_bench1, col_bench2 = st.columns(2)
 
 with col_bench1:
-    st.subheader("🎯 Dokładność (Zbieżność)")
+    st.subheader("🎯 Dokładność")
     fig_err, ax_err = plt.subplots()
-    ax_err.plot(complexity_steps, err_rect, label="Prostokąty (Środkowa)", color="royalblue", alpha=0.8)
-    ax_err.plot(complexity_steps, err_trap, label="Trapezy", color="green", alpha=0.8)
-    ax_err.plot(complexity_steps, err_mc, label="Monte Carlo (Trend)", color="orange", linestyle="--")
-    ax_err.set_yscale('log')
-    ax_err.set_xscale('log')
-    ax_err.set_xlabel("Liczba węzłów / podziałów (Log)")
-    ax_err.set_ylabel("Średni błąd bezwzględny (Log)")
+    ax_err.plot(complexity_steps, err_rect, label="Prostokąty", color="royalblue")
+    ax_err.plot(complexity_steps, err_trap, label="Trapezy", color="green")
+    ax_err.plot(complexity_steps, err_mc, label="Monte Carlo", color="orange", linestyle="--")
+    ax_err.set_yscale('log') # Log na Y zostawiamy, by widzieć różnice rzędów błędu
+    ax_err.set_xlabel("n / (n_mc/100)")
     ax_err.legend()
-    ax_err.grid(True, which="both", ls="-", alpha=0.2)
+    ax_err.grid(True, alpha=0.2)
     st.pyplot(fig_err)
 
 with col_bench2:
-    st.subheader("⏱️ Czas vs Złożoność")
+    st.subheader("⏱️ Czas")
     fig_time, ax_time = plt.subplots()
     ax_time.plot(complexity_steps, time_rect, label="Prostokąty", color="royalblue")
     ax_time.plot(complexity_steps, time_trap, label="Trapezy", color="green")
     ax_time.plot(complexity_steps, time_mc, label="Monte Carlo", color="orange")
-    ax_time.set_xlabel("Liczba węzłów / podziałów")
-    ax_time.set_ylabel("Czas obliczeń [ms]")
+    ax_time.set_yscale('log') # Log na Y pozwala zobaczyć "wystrzał" MC i separację Rect/Trap
+    ax_time.set_xlabel("n / (n_mc/100)")
+    ax_time.set_ylabel("Czas [ms]")
     ax_time.legend()
-    ax_time.grid(True, alpha=0.2)
+    ax_time.grid(True, which="both", alpha=0.2)
     st.pyplot(fig_time)
