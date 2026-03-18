@@ -81,9 +81,7 @@ with col_text:
 with col_toggle:
     pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
 st.sidebar.divider()
-
-# Nowe parametry dla Monte Carlo
-n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=5000, value=1000, step=100)
+n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=25000, value=1500, step=100)
 
 
 
@@ -121,8 +119,8 @@ with tab1:
         d_p += m.sum(m.maximum(0, -diff)) * (dx/50)
         ax1.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.4)
         if pokaz_bledy:
-            ax1.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.4)
-            ax1.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.4)
+            ax1.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.3)
+            ax1.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.3)
     ax1.set_xlim(a, b); ax1.set_ylim(-0.01, 0.4); ax1.grid(True, alpha=0.3)
     st.pyplot(fig1)
 
@@ -152,8 +150,8 @@ with tab1:
         d_pt += m.sum(m.maximum(0, -diff)) * (dx/50)
         ax1t.fill_between([xi, xf], [0, 0], [yi, yf], color='lightgreen', edgecolor='black', alpha=0.4)
         if pokaz_bledy:
-            ax1t.fill_between(sx, sf, ltrap, where=(ltrap > sf), color='cyan', alpha=0.4)
-            ax1t.fill_between(sx, ltrap, sf, where=(sf > ltrap), color='red', alpha=0.4)
+            ax1t.fill_between(sx, sf, ltrap, where=(ltrap > sf), color='cyan', alpha=0.3)
+            ax1t.fill_between(sx, ltrap, sf, where=(sf > ltrap), color='red', alpha=0.3)
     ax1t.set_xlim(a, b); ax1t.set_ylim(-0.01, 0.4); ax1t.grid(True, alpha=0.3)
     st.pyplot(fig1t)
 
@@ -233,8 +231,8 @@ with tab2:
         d_c += m.sum(m.maximum(0, -diff)) * (dx_c/50)
         ax2.bar(xi, h, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.4)
         if pokaz_bledy:
-            ax2.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.4)
-            ax2.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.4)
+            ax2.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.3)
+            ax2.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.3)
     ax2.set_xlim(a_c, b_c); ax2.set_ylim(-13, 13); ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
 
@@ -276,13 +274,11 @@ with tab2:
     st.divider()
 
     st.subheader("3. Metoda Monte Carlo")
-    # Funkcja skomplikowana ma wartości ujemne, więc box musi być szerszy
     y_min_mc_c, y_max_mc_c = -13, 13
     x_mc_c = m.random.uniform(a_c, b_c, n_mc)
     y_mc_c = m.random.uniform(y_min_mc_c, y_max_mc_c, n_mc)
     f_val_mc_c = funkcja_skomplikowana(x_mc_c)
     
-    # Hit dla funkcji ze znakiem: punkt między 0 a f(x)
     is_hit_pos = (y_mc_c > 0) & (y_mc_c <= f_val_mc_c)
     is_hit_neg = (y_mc_c < 0) & (y_mc_c >= f_val_mc_c)
     hits_c = m.sum(is_hit_pos) - m.sum(is_hit_neg)
@@ -293,7 +289,6 @@ with tab2:
     fig2mc, ax2mc = plt.subplots()
     ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
     
-    # Wizualizacja punktów "trafionych" (pod/nad wykresem względem osi 0)
     mask_hit = is_hit_pos | is_hit_neg
     ax2mc.scatter(x_mc_c[mask_hit], y_mc_c[mask_hit], color='green', s=2, alpha=0.5)
     ax2mc.scatter(x_mc_c[~mask_hit], y_mc_c[~mask_hit], color='orange', s=2, alpha=0.5)
