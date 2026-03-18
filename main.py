@@ -385,7 +385,5 @@ with col_bench2:
 
 st.divider()
 st.header("💬Mój komentarz")
-st.write("Przede wszystkim chcę powiedzieć, że nienawidzę Jupyter Notebooków, jak zapewne widać.")
-st.write("Lepiej spędzić pare godzin robić to w pythonie na streamlit'cie.")
-st.write("Robiłem to tak między północą a 3:00, więc jak coś nie jest bardzo szczególowo opisane, to pewnie dlatego.")
-st.write("\nTeraz do faktycznych wniosków")
+st.write("Przede wszystkim chcę powiedzieć, że nienawidzę Jupyter Notebooków, jak zapewne widać.Lepiej spędzić pare godzin robić to w pythonie na streamlit'cie. Robiłem to tak między północą a 3:00, więc jak coś nie jest bardzo szczególowo opisane, to pewnie dlatego.")
+st.write("Teraz do faktycznych wniosków")
