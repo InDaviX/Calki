@@ -58,9 +58,6 @@ st.markdown("""
         overflow-x: hidden !important;
         width: 100%;
     }
-    [data-testid="stLatex"] > div {
-        overflow-y: hidden !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -96,8 +93,7 @@ with tab1:
     wynik_num_1 = m.sum(heights) * dx
     wynik_ana_1 = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
     
-    fig, ax = plt.subplots(facecolor='none')
-    ax.set_facecolor('none')
+    fig, ax = plt.subplots()
     ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
     s_prosta, d_prosta = 0, 0
     for i in range(n):
@@ -112,27 +108,22 @@ with tab1:
             ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
             ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
     
-    ax.tick_params(colors='gray')
     ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
-    ax.set_title(f"Metoda {metoda} dla n={n}", color='gray')
+    ax.set_title(f"Wizualizacja: {metoda} (n={n})")
     ax.grid(True, linestyle='--', alpha=0.3)
     st.pyplot(fig)
 
     if pokaz_bledy:
-        st.markdown(f"""
-            <div class="right-panel">
-                <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-                <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.6f}</p>
-                <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.6f}</p>
-                <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.6f}</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
+            <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.6f}</p>
+            <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.6f}</p>
+            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.6f}</p></div>""", unsafe_allow_html=True)
 
-    st.latex(r"I = \int_{0}^{10} x e^{-x} \, dx \approx " + f"{wynik_num_1:.6f}")
+    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10} = " + f"{wynik_ana_1:.6f}")
     
     r1, r2 = st.columns(2)
-    r1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}):</p><p class='result-value'>{wynik_num_1:.6f}</p>", unsafe_allow_html=True)
+    r1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_1:.6f}</p>", unsafe_allow_html=True)
     r2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_1:.6f}</p>", unsafe_allow_html=True)
 
 with tab2:
@@ -154,8 +145,7 @@ with tab2:
     wynik_num_2 = m.sum(heights_c) * dx_c
     wynik_ana_2 = m.sin(m.exp(b_c)) - m.sin(m.exp(a_c))
         
-    fig2, ax2 = plt.subplots(facecolor='none')
-    ax2.set_facecolor('none')
+    fig2, ax2 = plt.subplots()
     ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
     s_skompl, d_skompl = 0, 0
     for i in range(n):
@@ -170,25 +160,20 @@ with tab2:
             ax2.fill_between(step_x_c, step_f_c, h_c, where=(h_c > step_f_c), color='cyan', alpha=0.4)
             ax2.fill_between(step_x_c, h_c, step_f_c, where=(step_f_c > h_c), color='red', alpha=0.4)
     
-    ax2.tick_params(colors='gray')
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
-    ax2.set_title(f"Metoda {metoda} dla n={n}", color='gray')
+    ax2.set_title(f"Wizualizacja: {metoda} (n={n})")
     ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
 
     if pokaz_bledy:
-        st.markdown(f"""
-            <div class="right-panel">
-                <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-                <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.6f}</p>
-                <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.6f}</p>
-                <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.6f}</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
+            <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.6f}</p>
+            <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.6f}</p>
+            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.6f}</p></div>""", unsafe_allow_html=True)
 
-    st.latex(r"I = \int_{0}^{2.5} e^x \cos(e^x) \, dx \approx " + f"{wynik_num_2:.6f}")
+    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5} = " + f"{wynik_ana_2:.6f}")
     
     k1, k2 = st.columns(2)
-    k1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}):</p><p class='result-value'>{wynik_num_2:.6f}</p>", unsafe_allow_html=True)
+    k1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_2:.6f}</p>", unsafe_allow_html=True)
     k2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_2:.6f}</p>", unsafe_allow_html=True)
