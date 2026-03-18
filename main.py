@@ -314,11 +314,13 @@ with tab2:
             <span>🟠 Nad wykresem: {n_mc - m.sum(mask_hit)}</span><br>
             ⚖️ Błąd: {res_mc_c - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
 
-# --- ZAKTUALIZOWANE WYKRESY BENCHMARKU ---
+
+
+
 st.divider()
 st.header("🏁 Zestawienie Wydajności")
 
-complexity_steps = [10, 50, 100, 250, 500, 1000]
+complexity_steps = [10,20, 50, 80, 100, 150, 200, 300, 400, 500, 800, 1000]
 err_rect, err_trap, err_mc = [], [], []
 time_rect, time_trap, time_mc = [], [], []
 
@@ -326,22 +328,19 @@ for step in complexity_steps:
     t_r_tmp, t_t_tmp, t_m_tmp = [], [], []
     e_r_tmp, e_t_tmp, e_m_tmp = [], [], []
     
-    for _ in range(10): # Średnia z 10 prób dla stabilności
-        # Prostokąty
+    for _ in range(30):
         t0 = time.perf_counter()
         x_b = m.linspace(a, b, step + 1)
         r_rect = m.sum(funkcja_prosta(x_b[:-1] + (b-a)/(2*step))) * (b-a)/step
         t_r_tmp.append(time.perf_counter() - t0)
         e_r_tmp.append(abs(r_rect - y_ana))
 
-        # Trapezy
         t0 = time.perf_counter()
         h_t = funkcja_prosta(x_b)
         r_trap = ((b-a)/(2*step)) * (h_t[0] + 2 * m.sum(h_t[1:-1]) + h_t[-1])
         t_t_tmp.append(time.perf_counter() - t0)
         e_t_tmp.append(abs(r_trap - y_ana))
 
-        # Monte Carlo (n_points = step * 100)
         points_mc = step * 100
         t0 = time.perf_counter()
         x_m = m.random.uniform(a, b, points_mc)
@@ -365,7 +364,7 @@ with col_bench1:
     ax_err.plot(complexity_steps, err_rect, label="Prostokąty", color="royalblue")
     ax_err.plot(complexity_steps, err_trap, label="Trapezy", color="green")
     ax_err.plot(complexity_steps, err_mc, label="Monte Carlo", color="orange", linestyle="--")
-    ax_err.set_yscale('log') # Log na Y zostawiamy, by widzieć różnice rzędów błędu
+    ax_err.set_yscale('log')
     ax_err.set_ylabel("Błąd bezwzględny")
     ax_err.legend()
     ax_err.grid(True, alpha=0.2)
@@ -377,8 +376,9 @@ with col_bench2:
     ax_time.plot(complexity_steps, time_rect, label="Prostokąty", color="royalblue")
     ax_time.plot(complexity_steps, time_trap, label="Trapezy", color="green")
     ax_time.plot(complexity_steps, time_mc, label="Monte Carlo", color="orange")
-    ax_time.set_yscale('log') # Log na Y pozwala zobaczyć "wystrzał" MC i separację Rect/Trap
+    ax_time.set_yscale('log')
     ax_time.set_ylabel("Czas")
     ax_time.legend()
     ax_time.grid(True, which="both", alpha=0.2)
     st.pyplot(fig_time)
+
