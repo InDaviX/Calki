@@ -63,7 +63,7 @@ st.markdown("""
 
 st.sidebar.header("Parametry")
 n = st.sidebar.slider("Liczba podziałów (n)", min_value=5, max_value=80, value=20, step=1)
-metoda = st.sidebar.selectbox("Metoda", ["Lewostronna", "Środkowa", "Prawostronna"])
+metoda_rect = st.sidebar.selectbox("Metoda Prostokątów", ["Lewostronna", "Środkowa", "Prawostronna"])
 
 col_text, col_toggle = st.sidebar.columns([3, 1])
 with col_text:
@@ -75,105 +75,147 @@ st.sidebar.divider()
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
 
 with tab1:
-    st.markdown(r"<span style='font-size: 22px;'>📈 Wykres i wzór funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
+    st.markdown(r"<span style='font-size: 22px;'>📈 Analiza funkcji prostej: &nbsp; $\boldsymbol{f(x) = x \cdot e^{-x}}$</span>", unsafe_allow_html=True)
     
     a, b = 0, 10
     x_plot = m.linspace(a, b, 500)
     y_plot = funkcja_prosta(x_plot)
     dx = (b - a) / n
     x_bins = m.linspace(a, b, n + 1)
+    y_ana = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
+
+    if metoda_rect == "Lewostronna":
+        h_rect = funkcja_prosta(x_bins[:-1])
+    elif metoda_rect == "Prawostronna":
+        h_rect = funkcja_prosta(x_bins[1:])
+    else:
+        h_rect = funkcja_prosta(x_bins[:-1] + dx/2)
     
-    if metoda == "Lewostronna":
-        heights = funkcja_prosta(x_bins[:-1])
-    elif metoda == "Prawostronna":
-        heights = funkcja_prosta(x_bins[1:])
-    elif metoda == "Środkowa":
-        heights = funkcja_prosta(x_bins[:-1] + (dx / 2))
-        
-    wynik_num_1 = m.sum(heights) * dx
-    wynik_ana_1 = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
+    res_rect = m.sum(h_rect) * dx
     
-    fig, ax = plt.subplots()
-    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
-    s_prosta, d_prosta = 0, 0
+    st.subheader(f"1. Metoda Prostokątów ({metoda_rect})")
+    fig1, ax1 = plt.subplots()
+    ax1.plot(x_plot, y_plot, color='royalblue', linewidth=2)
+    s_p, d_p = 0, 0
     for i in range(n):
-        xi, xf, h = x_bins[i], x_bins[i+1], heights[i]
-        step_x = m.linspace(xi, xf, 100)
-        step_f = funkcja_prosta(step_x)
-        diff = h - step_f
-        s_prosta += m.sum(m.maximum(0, diff)) * (dx / 100)
-        d_prosta += m.sum(m.maximum(0, -diff)) * (dx / 100)
-        ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
+        xi, xf, h = x_bins[i], x_bins[i+1], h_rect[i]
+        sx = m.linspace(xi, xf, 50)
+        sf = funkcja_prosta(sx)
+        diff = h - sf
+        s_p += m.sum(m.maximum(0, diff)) * (dx/50)
+        d_p += m.sum(m.maximum(0, -diff)) * (dx/50)
+        ax1.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.4)
         if pokaz_bledy:
-            ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
-            ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
+            ax1.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.4)
+            ax1.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.4)
+    ax1.set_xlim(a, b); ax1.set_ylim(-0.01, 0.4); ax1.set_title(f"Prostokąty: {metoda_rect}"); ax1.grid(True, alpha=0.3)
+    st.pyplot(fig1)
+
+    st.divider()
     
-    ax.set_xlim(a, b)
-    ax.set_ylim(-0.01, 0.4)
-    ax.set_title(f"Wizualizacja: {metoda} (n={n})")
-    ax.grid(True, linestyle='--', alpha=0.3)
-    st.pyplot(fig)
+    st.subheader("2. Metoda Trapezów")
+    h_trap = funkcja_prosta(x_bins)
+    res_trap = (dx / 2) * (h_trap[0] + 2 * m.sum(h_trap[1:-1]) + h_trap[-1])
+    
+    fig1t, ax1t = plt.subplots()
+    ax1t.plot(x_plot, y_plot, color='royalblue', linewidth=2)
+    s_pt, d_pt = 0, 0
+    for i in range(n):
+        xi, xf = x_bins[i], x_bins[i+1]
+        yi, yf = h_trap[i], h_trap[i+1]
+        sx = m.linspace(xi, xf, 50)
+        sf = funkcja_prosta(sx)
+        ltrap = yi + (yf - yi) * (sx - xi) / dx
+        diff = ltrap - sf
+        s_pt += m.sum(m.maximum(0, diff)) * (dx/50)
+        d_pt += m.sum(m.maximum(0, -diff)) * (dx/50)
+        ax1t.fill_between([xi, xf], [0, 0], [yi, yf], color='lightgreen', edgecolor='black', alpha=0.4)
+        if pokaz_bledy:
+            ax1t.fill_between(sx, sf, ltrap, where=(ltrap > sf), color='cyan', alpha=0.4)
+            ax1t.fill_between(sx, ltrap, sf, where=(sf > ltrap), color='red', alpha=0.4)
+    ax1t.set_xlim(a, b); ax1t.set_ylim(-0.01, 0.4); ax1t.set_title("Wizualizacja Trapezów"); ax1t.grid(True, alpha=0.3)
+    st.pyplot(fig1t)
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.10f}</p>
-            <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.10f}</p>
-            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.10f}</p></div>""", unsafe_allow_html=True)
+            <p><b>Prostokąty ({metoda_rect}):</b><br>🔵 Nadmiar: {s_p:.5f}<br>🔴 Niedomiar: {d_p:.5f}</p>
+            <hr style="border:0.5px solid var(--border-color)">
+            <p><b>Trapezy:</b><br>🔵 Nadmiar: {s_pt:.5f}<br>🔴 Niedomiar: {d_pt:.5f}</p></div>""", unsafe_allow_html=True)
 
-    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10} = " + f"{wynik_ana_1:.10f}")
-    
-    r1, r2 = st.columns(2)
-    r1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_1:.10f}</p>", unsafe_allow_html=True)
-    r2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_1:.10f}</p>", unsafe_allow_html=True)
+    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = " + f"{y_ana:.6f}")
+    c1, c2 = st.columns(2)
+    c1.markdown(f"<p class='result-label'>Wynik Trapezów:</p><p class='result-value'>{res_trap:.6f}</p>", unsafe_allow_html=True)
+    c2.markdown(f"<p class='result-label'>Wynik Prostokątów:</p><p class='result-value'>{res_rect:.6f}</p>", unsafe_allow_html=True)
 
 with tab2:
-    st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
+    st.markdown(r"<span style='font-size: 22px;'>📉 Analiza funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
     
     a_c, b_c = 0, 2.5
-    x_comp_plot = m.linspace(a_c, b_c, 2000)
-    y_comp_plot = funkcja_skomplikowana(x_comp_plot)
+    x_c_plot = m.linspace(a_c, b_c, 2000)
+    y_c_plot = funkcja_skomplikowana(x_c_plot)
     dx_c = (b_c - a_c) / n
-    x_bins_c = m.linspace(a_c, b_c, n + 1)
+    x_bc = m.linspace(a_c, b_c, n + 1)
+    y_ana_c = m.sin(m.exp(b_c)) - m.sin(m.exp(a_c))
+
+    if metoda_rect == "Lewostronna":
+        h_rc = funkcja_skomplikowana(x_bc[:-1])
+    elif metoda_rect == "Prawostronna":
+        h_rc = funkcja_skomplikowana(x_bc[1:])
+    else:
+        h_rc = funkcja_skomplikowana(x_bc[:-1] + dx_c/2)
     
-    if metoda == "Lewostronna":
-        heights_c = funkcja_skomplikowana(x_bins_c[:-1])
-    elif metoda == "Prawostronna":
-        heights_c = funkcja_skomplikowana(x_bins_c[1:])
-    elif metoda == "Środkowa":
-        heights_c = funkcja_skomplikowana(x_bins_c[:-1] + (dx_c / 2))
-        
-    wynik_num_2 = m.sum(heights_c) * dx_c
-    wynik_ana_2 = m.sin(m.exp(b_c)) - m.sin(m.exp(a_c))
-        
+    res_rc = m.sum(h_rc) * dx_c
+
+    st.subheader(f"1. Metoda Prostokątów ({metoda_rect})")
     fig2, ax2 = plt.subplots()
-    ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
-    s_skompl, d_skompl = 0, 0
+    ax2.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
+    s_c, d_c = 0, 0
     for i in range(n):
-        xi_c, xf_c, h_c = x_bins_c[i], x_bins_c[i+1], heights_c[i]
-        step_x_c = m.linspace(xi_c, xf_c, 100)
-        step_f_c = funkcja_skomplikowana(step_x_c)
-        diff_c = h_c - step_f_c
-        s_skompl += m.sum(m.maximum(0, diff_c)) * (dx_c / 100)
-        d_skompl += m.sum(m.maximum(0, -diff_c)) * (dx_c / 100)
-        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
+        xi, xf, h = x_bc[i], x_bc[i+1], h_rc[i]
+        sx = m.linspace(xi, xf, 50)
+        sf = funkcja_skomplikowana(sx)
+        diff = h - sf
+        s_c += m.sum(m.maximum(0, diff)) * (dx_c/50)
+        d_c += m.sum(m.maximum(0, -diff)) * (dx_c/50)
+        ax2.bar(xi, h, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.4)
         if pokaz_bledy:
-            ax2.fill_between(step_x_c, step_f_c, h_c, where=(h_c > step_f_c), color='cyan', alpha=0.4)
-            ax2.fill_between(step_x_c, h_c, step_f_c, where=(step_f_c > h_c), color='red', alpha=0.4)
-    
-    ax2.set_xlim(a_c, b_c)
-    ax2.set_ylim(-13, 13)
-    ax2.set_title(f"Wizualizacja: {metoda} (n={n})")
-    ax2.grid(True, alpha=0.2)
+            ax2.fill_between(sx, sf, h, where=(h > sf), color='cyan', alpha=0.4)
+            ax2.fill_between(sx, h, sf, where=(sf > h), color='red', alpha=0.4)
+    ax2.set_xlim(a_c, b_c); ax2.set_ylim(-13, 13); ax2.set_title(f"Prostokąty: {metoda_rect}"); ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
+
+    st.divider()
+
+    st.subheader("2. Metoda Trapezów")
+    h_tc = funkcja_skomplikowana(x_bc)
+    res_tc = (dx_c / 2) * (h_tc[0] + 2 * m.sum(h_tc[1:-1]) + h_tc[-1])
+    
+    fig2t, ax2t = plt.subplots()
+    ax2t.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
+    s_ct, d_ct = 0, 0
+    for i in range(n):
+        xi, xf = x_bc[i], x_bc[i+1]
+        yi, yf = h_tc[i], h_tc[i+1]
+        sx = m.linspace(xi, xf, 50)
+        sf = funkcja_skomplikowana(sx)
+        ltrap = yi + (yf - yi) * (sx - xi) / dx_c
+        diff = ltrap - sf
+        s_ct += m.sum(m.maximum(0, diff)) * (dx_c/50)
+        d_ct += m.sum(m.maximum(0, -diff)) * (dx_c/50)
+        ax2t.fill_between([xi, xf], [0, 0], [yi, yf], color='lightgreen', edgecolor='black', alpha=0.4)
+        if pokaz_bledy:
+            ax2t.fill_between(sx, sf, ltrap, where=(ltrap > sf), color='cyan', alpha=0.4)
+            ax2t.fill_between(sx, ltrap, sf, where=(sf > ltrap), color='red', alpha=0.4)
+    ax2t.set_xlim(a_c, b_c); ax2t.set_ylim(-13, 13); ax2t.set_title("Wizualizacja Trapezów"); ax2t.grid(True, alpha=0.2)
+    st.pyplot(fig2t)
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.10f}</p>
-            <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.10f}</p>
-            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.10f}</p></div>""", unsafe_allow_html=True)
+            <p><b>Prostokąty ({metoda_rect}):</b><br>🔵 Nadmiar: {s_c:.5f}<br>🔴 Niedomiar: {d_c:.5f}</p>
+            <hr style="border:0.5px solid var(--border-color)">
+            <p><b>Trapezy:</b><br>🔵 Nadmiar: {s_ct:.5f}<br>🔴 Niedomiar: {d_ct:.5f}</p></div>""", unsafe_allow_html=True)
 
-    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5} = " + f"{wynik_ana_2:.10f}")
-    
+    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = " + f"{y_ana_c:.6f}")
     k1, k2 = st.columns(2)
-    k1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_2:.10f}</p>", unsafe_allow_html=True)
-    k2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_2:.10f}</p>", unsafe_allow_html=True)
+    k1.markdown(f"<p class='result-label'>Wynik Trapezów:</p><p class='result-value'>{res_tc:.6f}</p>", unsafe_allow_html=True)
+    k2.markdown(f"<p class='result-label'>Wynik Prostokątów:</p><p class='result-value'>{res_rc:.6f}</p>", unsafe_allow_html=True)
