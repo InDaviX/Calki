@@ -7,7 +7,8 @@ import time
 
 
 def funkcja_prosta(x):
-    return x * m.exp(-1 * x)
+    # return x * m.exp(-1 * x)
+    return x ** 2
 
 def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
@@ -386,4 +387,9 @@ with col_bench2:
 st.divider()
 st.header("💬Mój komentarz")
 st.write("Przede wszystkim chcę powiedzieć, że nienawidzę Jupyter Notebooków, jak zapewne widać.Lepiej spędzić pare godzin robić to w pythonie na streamlit'cie. Robiłem to tak między północą a 3:00, więc jak coś nie jest bardzo szczególowo opisane, to pewnie dlatego.")
-st.write("Teraz do faktycznych wniosków")
+st.write("""Teraz do faktycznych wniosków:
+         Metoda prostokątów jest w zasadzie wystarczająca do większości zastosowań. Na moją intuicję zakładałbym, że opcja środkowa
+         jest najbezpieczniejsza i najbardziej uniwersalna. Metoda Lewostronna zawsze mocno zawyża funkcje malejace, a zaniża rosnące.
+         Oczywiście analogicznie dla Metody Prawostronnej (przeciwnie do Lewostronnej). W części funkcji te błędy obliczeniowe będą się cancelować.
+         Taką funkcją byłoby x^2 , ze wzgledu na swoją symetryczność
+         """)
