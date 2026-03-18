@@ -314,6 +314,7 @@ with tab2:
             <span>🟠 Nad wykresem: {n_mc - m.sum(mask_hit)}</span><br>
             ⚖️ Błąd: {res_mc_c - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
 
+st.divider()
 
 st.header(" Zestawienie Wydajności i Dokładności")
 st.markdown("Analiza porównawcza dla wybranej funkcji w zależności od złożoności obliczeniowej.")
