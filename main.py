@@ -81,7 +81,7 @@ with col_text:
 with col_toggle:
     pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
 st.sidebar.divider()
-n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=5000, value=1000, step=100)
+n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=25000, value=5000, step=100)
 
 
 
