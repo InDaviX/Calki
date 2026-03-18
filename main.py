@@ -12,7 +12,6 @@ st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 
 st.markdown("""
     <style>
-    /* Zakładki 50/50 */
     div[data-baseweb="tab-list"] {
         width: 100%;
         gap: 0px;
@@ -25,8 +24,6 @@ st.markdown("""
         font-size: 20px;
         font-weight: bold;
     }
-    
-    /* Margines w sidebarze */
     div[data-testid="stSelectbox"] {
         margin-bottom: 30px;
     }
@@ -34,8 +31,6 @@ st.markdown("""
         font-size: 16px;
         margin-top: 5px;
     }
-
-    /* FORMATOWANIE WYNIKÓW - MOTYW-AWARE */
     .result-label {
         font-size: 18px;
         color: var(--text-color);
@@ -46,15 +41,12 @@ st.markdown("""
         font-weight: bold;
         color: var(--text-color);
     }
-
-    /* PRAWY PANEL - REAGUJE NA MOTYW */
     .right-panel {
         position: fixed;
         top: 100px;
         right: 30px;
         width: 280px;
         padding: 20px;
-        /* Używamy zmiennych systemowych Streamlita */
         background-color: var(--secondary-background-color);
         color: var(--text-color);
         border: 1px solid var(--border-color);
@@ -62,10 +54,9 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         z-index: 999;
     }
-
-    /* POZBYCIE SIĘ SUWAKA POD LATEX */
     [data-testid="stLatex"] {
         overflow-x: hidden !important;
+        width: 100%;
     }
     [data-testid="stLatex"] > div {
         overflow-y: hidden !important;
@@ -105,7 +96,7 @@ with tab1:
     wynik_num_1 = m.sum(heights) * dx
     wynik_ana_1 = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
     
-    fig, ax = plt.subplots(facecolor='none') # Przezroczyste tło wykresu pod motyw
+    fig, ax = plt.subplots(facecolor='none')
     ax.set_facecolor('none')
     ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
     s_prosta, d_prosta = 0, 0
@@ -121,13 +112,10 @@ with tab1:
             ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
             ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
     
-    # Dostosowanie kolorów osi do motywu
     ax.tick_params(colors='gray')
-    ax.xaxis.label.set_color('gray')
-    ax.yaxis.label.set_color('gray')
-    
     ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
+    ax.set_title(f"Metoda {metoda} dla n={n}", color='gray')
     ax.grid(True, linestyle='--', alpha=0.3)
     st.pyplot(fig)
 
@@ -142,11 +130,11 @@ with tab1:
             </div>
             """, unsafe_allow_html=True)
 
-    st.markdown(f"### Podsumowanie: {metoda} (n={n})")
+    st.latex(r"I = \int_{0}^{10} x e^{-x} \, dx \approx " + f"{wynik_num_1:.6f}")
+    
     r1, r2 = st.columns(2)
-    r1.markdown(f"<p class='result-label'>Wynik numeryczny:</p><p class='result-value'>{wynik_num_1:.6f}</p>", unsafe_allow_html=True)
-    r2.markdown(f"<p class='result-label'>Wynik oczekiwany:</p><p class='result-value'>{wynik_ana_1:.6f}</p>", unsafe_allow_html=True)
-    st.latex(r"I = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10}")
+    r1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}):</p><p class='result-value'>{wynik_num_1:.6f}</p>", unsafe_allow_html=True)
+    r2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_1:.6f}</p>", unsafe_allow_html=True)
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -186,6 +174,7 @@ with tab2:
     ax2.tick_params(colors='gray')
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
+    ax2.set_title(f"Szybkie oscylacje: {metoda} (n={n})", color='gray')
     ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
 
@@ -200,8 +189,8 @@ with tab2:
             </div>
             """, unsafe_allow_html=True)
 
-    st.markdown(f"### Podsumowanie: {metoda} (n={n})")
+    st.latex(r"I = \int_{0}^{2.5} e^x \cos(e^x) \, dx \approx " + f"{wynik_num_2:.6f}")
+    
     k1, k2 = st.columns(2)
-    k1.markdown(f"<p class='result-label'>Wynik numeryczny:</p><p class='result-value'>{wynik_num_2:.6f}</p>", unsafe_allow_html=True)
-    k2.markdown(f"<p class='result-label'>Wynik oczekiwany:</p><p class='result-value'>{wynik_ana_2:.6f}</p>", unsafe_allow_html=True)
-    st.latex(r"I = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5}")
+    k1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}):</p><p class='result-value'>{wynik_num_2:.6f}</p>", unsafe_allow_html=True)
+    k2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_2:.6f}</p>", unsafe_allow_html=True)
