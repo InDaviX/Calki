@@ -220,7 +220,7 @@ with tab2:
 
     st.subheader(f"1. Metoda Prostokątów ({metoda_rect})")
     fig2, ax2 = plt.subplots()
-    ax2.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
+    ax2.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=2)
     s_c, d_c = 0, 0
     for i in range(n):
         xi, xf, h = x_bc[i], x_bc[i+1], h_rc[i]
@@ -249,7 +249,7 @@ with tab2:
     res_tc = (dx_c / 2) * (h_tc[0] + 2 * m.sum(h_tc[1:-1]) + h_tc[-1])
     
     fig2t, ax2t = plt.subplots()
-    ax2t.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
+    ax2t.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=2)
     s_ct, d_ct = 0, 0
     for i in range(n):
         xi, xf = x_bc[i], x_bc[i+1]
@@ -287,7 +287,7 @@ with tab2:
     res_mc_c = pole_box_c * (hits_c / n_mc)
 
     fig2mc, ax2mc = plt.subplots()
-    ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=20)
+    ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=2)
     
     mask_hit = is_hit_pos | is_hit_neg
     ax2mc.scatter(x_mc_c[mask_hit], y_mc_c[mask_hit], color='green', s=2, alpha=0.5)
