@@ -116,15 +116,15 @@ with tab1:
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.6f}</p>
-            <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.6f}</p>
-            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.6f}</p></div>""", unsafe_allow_html=True)
+            <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.10f}</p>
+            <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.10f}</p>
+            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.10f}</p></div>""", unsafe_allow_html=True)
 
-    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10} = " + f"{wynik_ana_1:.16f}")
+    st.latex(r"I_{exact} = \int_{0}^{10} x e^{-x} \, dx = \left[ -e^{-x}(x+1) \right]_{0}^{10} = " + f"{wynik_ana_1:.10f}")
     
     r1, r2 = st.columns(2)
-    r1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_1:.16f}</p>", unsafe_allow_html=True)
-    r2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_1:.16f}</p>", unsafe_allow_html=True)
+    r1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_1:.10f}</p>", unsafe_allow_html=True)
+    r2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_1:.10f}</p>", unsafe_allow_html=True)
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Wykres i wzór funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -168,12 +168,12 @@ with tab2:
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.6f}</p>
-            <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.6f}</p>
-            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.6f}</p></div>""", unsafe_allow_html=True)
+            <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.10f}</p>
+            <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.10f}</p>
+            <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.10f}</p></div>""", unsafe_allow_html=True)
 
-    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5} = " + f"{wynik_ana_2:.16f}")
+    st.latex(r"I_{exact} = \int_{0}^{2.5} e^x \cos(e^x) \, dx = \left[ \sin(e^x) \right]_{0}^{2.5} = " + f"{wynik_ana_2:.10f}")
     
     k1, k2 = st.columns(2)
-    k1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_2:.16f}</p>", unsafe_allow_html=True)
-    k2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_2:.16f}</p>", unsafe_allow_html=True)
+    k1.markdown(f"<p class='result-label'>Przybliżenie ({metoda}, n={n}):</p><p class='result-value'>{wynik_num_2:.10f}</p>", unsafe_allow_html=True)
+    k2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{wynik_ana_2:.10f}</p>", unsafe_allow_html=True)
