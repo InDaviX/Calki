@@ -366,7 +366,7 @@ with col_bench1:
     ax_err.plot(complexity_steps, err_trap, label="Trapezy", color="green")
     ax_err.plot(complexity_steps, err_mc, label="Monte Carlo", color="orange", linestyle="--")
     ax_err.set_yscale('log') # Log na Y zostawiamy, by widzieć różnice rzędów błędu
-    ax_err.set_xlabel("n / (n_mc/100)")
+    ax_err.set_ylabel("Błąd bezwzględny")
     ax_err.legend()
     ax_err.grid(True, alpha=0.2)
     st.pyplot(fig_err)
@@ -378,8 +378,7 @@ with col_bench2:
     ax_time.plot(complexity_steps, time_trap, label="Trapezy", color="green")
     ax_time.plot(complexity_steps, time_mc, label="Monte Carlo", color="orange")
     ax_time.set_yscale('log') # Log na Y pozwala zobaczyć "wystrzał" MC i separację Rect/Trap
-    ax_time.set_xlabel("n / (n_mc/100)")
-    ax_time.set_ylabel("Czas [ms]")
+    ax_time.set_ylabel("Czas")
     ax_time.legend()
     ax_time.grid(True, which="both", alpha=0.2)
     st.pyplot(fig_time)
