@@ -9,6 +9,7 @@ def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
 
 st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
+
 st.markdown("""
     <style>
     div[data-baseweb="tab-list"] {
@@ -37,6 +38,19 @@ st.markdown("""
     .result-value {
         font-size: 24px;
         font-weight: bold;
+    }
+    /* PRAWY PANEL STATYSTYK */
+    .right-panel {
+        position: fixed;
+        top: 100px;
+        right: 30px;
+        width: 280px;
+        padding: 20px;
+        background-color: white;
+        border: 1px solid #e6e9ef;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 999;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -72,35 +86,36 @@ with tab1:
         
     wynik_num_1 = m.sum(heights) * dx
     wynik_ana_1 = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
-        
-    col_chart, col_stats = st.columns([2, 1])
     
-    with col_chart:
-        fig, ax = plt.subplots()
-        ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
-        s_prosta, d_prosta = 0, 0
-        for i in range(n):
-            xi, xf, h = x_bins[i], x_bins[i+1], heights[i]
-            step_x = m.linspace(xi, xf, 100)
-            step_f = funkcja_prosta(step_x)
-            diff = h - step_f
-            s_prosta += m.sum(m.maximum(0, diff)) * (dx / 100)
-            d_prosta += m.sum(m.maximum(0, -diff)) * (dx / 100)
-            ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
-            if pokaz_bledy:
-                ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
-                ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
-        ax.set_xlim(a, b)
-        ax.set_ylim(-0.01, 0.4)
-        ax.grid(True, linestyle='--', alpha=0.6)
-        st.pyplot(fig)
-
-    with col_stats:
+    fig, ax = plt.subplots()
+    ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
+    s_prosta, d_prosta = 0, 0
+    for i in range(n):
+        xi, xf, h = x_bins[i], x_bins[i+1], heights[i]
+        step_x = m.linspace(xi, xf, 100)
+        step_f = funkcja_prosta(step_x)
+        diff = h - step_f
+        s_prosta += m.sum(m.maximum(0, diff)) * (dx / 100)
+        d_prosta += m.sum(m.maximum(0, -diff)) * (dx / 100)
+        ax.bar(xi, h, width=dx, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
         if pokaz_bledy:
-            st.markdown("### Statystyki błędu")
-            st.markdown(f"🔵 **Suma nadmiarów:**\n{s_prosta:.6f}")
-            st.markdown(f"🔴 **Suma niedomiarów:**\n{d_prosta:.6f}")
-            st.markdown(f"⚖️ **Błąd przybliżenia:**\n{s_prosta - d_prosta:.6f}")
+            ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
+            ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
+    ax.set_xlim(a, b)
+    ax.set_ylim(-0.01, 0.4)
+    ax.grid(True, linestyle='--', alpha=0.6)
+    st.pyplot(fig)
+
+    if pokaz_bledy:
+        st.markdown(f"""
+            <div class="right-panel">
+                <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
+                <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.6f}</p>
+                <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.6f}</p>
+                <hr>
+                <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.6f}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown(f"### Podsumowanie: {metoda} (n={n})")
     r1, r2 = st.columns(2)
@@ -127,34 +142,35 @@ with tab2:
     wynik_num_2 = m.sum(heights_c) * dx_c
     wynik_ana_2 = m.sin(m.exp(b_c)) - m.sin(m.exp(a_c))
         
-    col_chart2, col_stats2 = st.columns([2, 1])
-    
-    with col_chart2:
-        fig2, ax2 = plt.subplots()
-        ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
-        s_skompl, d_skompl = 0, 0
-        for i in range(n):
-            xi_c, xf_c, h_c = x_bins_c[i], x_bins_c[i+1], heights_c[i]
-            step_x_c = m.linspace(xi_c, xf_c, 100)
-            step_f_c = funkcja_skomplikowana(step_x_c)
-            diff_c = h_c - step_f_c
-            s_skompl += m.sum(m.maximum(0, diff_c)) * (dx_c / 100)
-            d_skompl += m.sum(m.maximum(0, -diff_c)) * (dx_c / 100)
-            ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
-            if pokaz_bledy:
-                ax2.fill_between(step_x_c, step_f_c, h_c, where=(h_c > step_f_c), color='cyan', alpha=0.4)
-                ax2.fill_between(step_x_c, h_c, step_f_c, where=(step_f_c > h_c), color='red', alpha=0.4)
-        ax2.set_xlim(a_c, b_c)
-        ax2.set_ylim(-13, 13)
-        ax2.grid(True)
-        st.pyplot(fig2)
-
-    with col_stats2:
+    fig2, ax2 = plt.subplots()
+    ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
+    s_skompl, d_skompl = 0, 0
+    for i in range(n):
+        xi_c, xf_c, h_c = x_bins_c[i], x_bins_c[i+1], heights_c[i]
+        step_x_c = m.linspace(xi_c, xf_c, 100)
+        step_f_c = funkcja_skomplikowana(step_x_c)
+        diff_c = h_c - step_f_c
+        s_skompl += m.sum(m.maximum(0, diff_c)) * (dx_c / 100)
+        d_skompl += m.sum(m.maximum(0, -diff_c)) * (dx_c / 100)
+        ax2.bar(xi_c, h_c, width=dx_c, align='edge', color='lightgreen', edgecolor='black', alpha=0.6)
         if pokaz_bledy:
-            st.markdown("### Statystyki błędu")
-            st.markdown(f"🔵 **Suma nadmiarów:**\n{s_skompl:.6f}")
-            st.markdown(f"🔴 **Suma niedomiarów:**\n{d_skompl:.6f}")
-            st.markdown(f"⚖️ **Błąd przybliżenia:**\n{s_skompl - d_skompl:.6f}")
+            ax2.fill_between(step_x_c, step_f_c, h_c, where=(h_c > step_f_c), color='cyan', alpha=0.4)
+            ax2.fill_between(step_x_c, h_c, step_f_c, where=(step_f_c > h_c), color='red', alpha=0.4)
+    ax2.set_xlim(a_c, b_c)
+    ax2.set_ylim(-13, 13)
+    ax2.grid(True)
+    st.pyplot(fig2)
+
+    if pokaz_bledy:
+        st.markdown(f"""
+            <div class="right-panel">
+                <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
+                <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.6f}</p>
+                <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.6f}</p>
+                <hr>
+                <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.6f}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown(f"### Podsumowanie: {metoda} (n={n})")
     k1, k2 = st.columns(2)
