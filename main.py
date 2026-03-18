@@ -162,7 +162,6 @@ with tab1:
     st.divider()
 
     st.subheader("3. Metoda Monte Carlo")
-    # Definicja obszaru rzutu
     y_min_mc, y_max_mc = 0, 0.4
     x_mc = m.random.uniform(a, b, n_mc)
     y_mc = m.random.uniform(y_min_mc, y_max_mc, n_mc)
@@ -193,8 +192,8 @@ with tab1:
             🔵 Nadmiar: {s_pt:.10f}<br>🔴 Niedomiar: {d_pt:.10f}<br>⚖️ Błąd: {res_trap - y_ana:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
             <p><b>Metoda Monte Carlo:</b><br>
-            <span style='color:green'>🟢 Pod wykresem: {hits}</span><br>
-            <span style='color:orange'>🟠 Nad wykresem: {n_mc - hits}</span><br>
+            <span>🟢 Pod wykresem: {hits}</span><br>
+            <span>🟠 Nad wykresem: {n_mc - hits}</span><br>
             ⚖️ Błąd: {res_mc - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
 
 
@@ -311,22 +310,19 @@ with tab2:
             🔵 Nadmiar: {s_ct:.10f}<br>🔴 Niedomiar: {d_ct:.10f}<br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
             <p><b>Metoda Monte Carlo:</b><br>
-            <span style='color:green'>🟢 Pod wykresem (hit): {m.sum(mask_hit)}</span><br>
-            <span style='color:orange'>🟠 Nad wykresem (miss): {n_mc - m.sum(mask_hit)}</span><br>
+            <span>🟢 Pod wykresem: {m.sum(mask_hit)}</span><br>
+            <span>🟠 Nad wykresem: {n_mc - m.sum(mask_hit)}</span><br>
             ⚖️ Błąd: {res_mc_c - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
 
-# --- NOWA SEKCJA: BENCHMARK ---
-st.header("🏁 Zestawienie Wydajności i Dokładności")
+
+st.header(" Zestawienie Wydajności i Dokładności")
 st.markdown("Analiza porównawcza dla wybranej funkcji w zależności od złożoności obliczeniowej.")
 
-# Przygotowanie danych do benchmarku (na podstawie funkcji prostej dla spójności)
-# Skala n: [10, 50, 100, 200, 500] -> Skala MC: [n * 100]
-complexity_steps = [10, 50, 100, 200, 400]
+complexity_steps = [10, 20, 50, 85, 100, 150, 200, 300, 400]
 err_rect, err_trap, err_mc = [], [], []
 time_rect, time_trap, time_mc = [], [], []
 
 for step in complexity_steps:
-    # 1. Metoda Prostokątów
     t0 = time.perf_counter()
     x_b = m.linspace(a, b, step + 1)
     h_b = funkcja_prosta(x_b[:-1] + (b-a)/(2*step))
@@ -334,14 +330,12 @@ for step in complexity_steps:
     time_rect.append((time.perf_counter() - t0) * 1000)
     err_rect.append(abs(r_rect - y_ana))
 
-    # 2. Metoda Trapezów
     t0 = time.perf_counter()
     h_t = funkcja_prosta(x_b)
     r_trap = ((b-a)/(2*step)) * (h_t[0] + 2 * m.sum(h_t[1:-1]) + h_t[-1])
     time_trap.append((time.perf_counter() - t0) * 1000)
     err_trap.append(abs(r_trap - y_ana))
 
-    # 3. Metoda Monte Carlo (skalujemy punkty tak, by MC było porównywalne w wysiłku)
     points_mc = step * 100
     t0 = time.perf_counter()
     x_m = m.random.uniform(a, b, points_mc)
