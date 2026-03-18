@@ -7,9 +7,7 @@ import time
 
 
 def funkcja_prosta(x):
-    # return x * m.exp(-1 * x)
-    a = -7 / 405
-    return a * x * (x - 9)
+    return x * m.exp(-1 * x)
 
 def funkcja_skomplikowana(x):
     return m.exp(x) * m.cos(m.exp(x))
@@ -392,6 +390,11 @@ st.write("Teraz do faktycznych wniosków:")
 st.write("""
          Metoda prostokątów jest w zasadzie wystarczająca do większości zastosowań. Na moją intuicję zakładałbym, że opcja środkowa
          jest najbezpieczniejsza i najbardziej uniwersalna. Metoda Lewostronna zawsze mocno zawyża funkcje malejace, a zaniża rosnące.
-         Oczywiście analogicznie dla Metody Prawostronnej (przeciwnie do Lewostronnej). W części funkcji te błędy obliczeniowe będą się cancelować.
-         Taką funkcją byłoby x^2 , ze wzgledu na swoją symetryczność
+         Oczywiście analogicznie dla Metody Prawostronnej (przeciwnie do Lewostronnej). W części funkcji te błędy obliczeniowe będą się kancelować,
+         jeśli funkcja ma podobną ilość obszarów rosnących co malejących.
+         """)
+st.write("""
+         Metoda trapezów jest w sumie sprytna, ale w tym wariancie ta metoda opiera kąt góry trapezu na punktach pobliskich, co jest tym razem poddatne bardziej
+         na zachowanie drugiej pochodnej, czyli czy nasza funkcja zagina się do góry czy do dołu. Myślę że nie głupią opcją, byłoby wyliczać pochodna z funkcji w punkcie
+         środka przedziału i ustawiać trapez pod tym kątem (w sensie żeby obliczyć kąt nachylenia funkcji w punkcie środka przedziału).
          """)
