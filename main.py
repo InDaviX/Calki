@@ -66,6 +66,9 @@ st.markdown("""
         overflow-x: hidden !important;
         width: 100%;
     }
+    [data-testid="stLatex"] > div {
+        overflow-y: hidden !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 tab1, tab2 = st.tabs(["Funkcja Prosta", "Funkcja Skomplikowana"])
@@ -78,7 +81,7 @@ with col_text:
 with col_toggle:
     pokaz_bledy = st.toggle("", value=True, label_visibility="collapsed")
 st.sidebar.divider()
-
+n_mc = st.sidebar.slider("Liczba punktów Monte Carlo", min_value=100, max_value=5000, value=1000, step=100)
 
 
 
@@ -156,13 +159,40 @@ with tab1:
     t1.markdown(f"<p class='result-label'>Przybliżenie Trapezów:</p><p class='result-value'>{res_trap:.10f}</p>", unsafe_allow_html=True)
     t2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana:.10f}</p>", unsafe_allow_html=True)
 
+    st.divider()
+
+    st.subheader("3. Metoda Monte Carlo")
+    y_min_mc, y_max_mc = 0, 0.4
+    x_mc = m.random.uniform(a, b, n_mc)
+    y_mc = m.random.uniform(y_min_mc, y_max_mc, n_mc)
+    f_val_mc = funkcja_prosta(x_mc)
+    
+    is_under = y_mc <= f_val_mc
+    hits = m.sum(is_under)
+    pole_box = (b - a) * (y_max_mc - y_min_mc)
+    res_mc = pole_box * (hits / n_mc)
+
+    fig1mc, ax1mc = plt.subplots()
+    ax1mc.plot(x_plot, y_plot, color='royalblue', linewidth=2)
+    ax1mc.scatter(x_mc[is_under], y_mc[is_under], color='green', s=2, alpha=0.5, label='Pod wykresem')
+    ax1mc.scatter(x_mc[~is_under], y_mc[~is_under], color='orange', s=2, alpha=0.5, label='Nad wykresem')
+    ax1mc.set_xlim(a, b); ax1mc.set_ylim(-0.01, 0.4); ax1mc.grid(True, alpha=0.3)
+    st.pyplot(fig1mc)
+
+    mc1, mc2 = st.columns(2)
+    mc1.markdown(f"<p class='result-label'>Przybliżenie Monte Carlo:</p><p class='result-value'>{res_mc:.10f}</p>", unsafe_allow_html=True)
+    mc2.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana:.10f}</p>", unsafe_allow_html=True)
+
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
             <p><b>Metoda Prostokątów ({metoda_rect}):</b><br>
             🔵 Nadmiar: {s_p:.10f}<br>🔴 Niedomiar: {d_p:.10f}<br>⚖️ Błąd: {res_rect - y_ana:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
             <p><b>Metoda Trapezów:</b><br>
-            🔵 Nadmiar: {s_pt:.10f}<br>🔴 Niedomiar: {d_pt:.10f}<br>⚖️ Błąd: {res_trap - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
+            🔵 Nadmiar: {s_pt:.10f}<br>🔴 Niedomiar: {d_pt:.10f}<br>⚖️ Błąd: {res_trap - y_ana:.10f}</p>
+            <hr style="border:0.5px solid var(--border-color)">
+            <p><b>Metoda Monte Carlo:</b><br>
+            🟢 Pod wykresem: {hits}<br>🟠 Nad wykresem: {n_mc - hits}<br>⚖️ Błąd: {res_mc - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
 
 
 
@@ -240,10 +270,42 @@ with tab2:
     t1_c.markdown(f"<p class='result-label'>Przybliżenie Trapezów:</p><p class='result-value'>{res_tc:.10f}</p>", unsafe_allow_html=True)
     t2_c.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana_c:.10f}</p>", unsafe_allow_html=True)
 
+    st.divider()
+
+    st.subheader("3. Metoda Monte Carlo")
+    y_min_mc_c, y_max_mc_c = -13, 13
+    x_mc_c = m.random.uniform(a_c, b_c, n_mc)
+    y_mc_c = m.random.uniform(y_min_mc_c, y_max_mc_c, n_mc)
+    f_val_mc_c = funkcja_skomplikowana(x_mc_c)
+    
+    is_hit_pos = (y_mc_c > 0) & (y_mc_c <= f_val_mc_c)
+    is_hit_neg = (y_mc_c < 0) & (y_mc_c >= f_val_mc_c)
+    hits_c = m.sum(is_hit_pos) - m.sum(is_hit_neg)
+    
+    pole_box_c = (b_c - a_c) * (y_max_mc_c - y_min_mc_c)
+    res_mc_c = pole_box_c * (hits_c / n_mc)
+
+    fig2mc, ax2mc = plt.subplots()
+    ax2mc.plot(x_c_plot, y_c_plot, color='darkorange', linewidth=1)
+    
+    mask_hit = is_hit_pos | is_hit_neg
+    ax2mc.scatter(x_mc_c[mask_hit], y_mc_c[mask_hit], color='green', s=2, alpha=0.5)
+    ax2mc.scatter(x_mc_c[~mask_hit], y_mc_c[~mask_hit], color='orange', s=2, alpha=0.5)
+    
+    ax2mc.set_xlim(a_c, b_c); ax2mc.set_ylim(-13, 13); ax2mc.grid(True, alpha=0.2)
+    st.pyplot(fig2mc)
+
+    mc1_c, mc2_c = st.columns(2)
+    mc1_c.markdown(f"<p class='result-label'>Przybliżenie Monte Carlo:</p><p class='result-value'>{res_mc_c:.10f}</p>", unsafe_allow_html=True)
+    mc2_c.markdown(f"<p class='result-label'>Wartość dokładna:</p><p class='result-value'>{y_ana_c:.10f}</p>", unsafe_allow_html=True)
+
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
             <p><b>Metoda Prostokątów ({metoda_rect}):</b><br>
             🔵 Nadmiar: {s_c:.10f}<br>🔴 Niedomiar: {d_c:.10f}<br>⚖️ Błąd: {res_rc - y_ana_c:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
             <p><b>Metoda Trapezów:</b><br>
-            🔵 Nadmiar: {s_ct:.10f}<br>🔴 Niedomiar: {d_ct:.10f}<br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
+            🔵 Nadmiar: {s_ct:.10f}<br>🔴 Niedomiar: {d_ct:.10f}<br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p>
+            <hr style="border:0.5px solid var(--border-color)">
+            <p><b>Metoda Monte Carlo:</b><br>
+            🟢 Pod wykresem (hit): {m.sum(mask_hit)}<br>🟠 Nad wykresem (miss): {n_mc - m.sum(mask_hit)}<br>⚖️ Błąd: {res_mc_c - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
