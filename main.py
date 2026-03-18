@@ -318,7 +318,7 @@ with tab2:
 
 
 st.divider()
-st.header("🏁 Zestawienie Wydajności")
+st.header(" Zestawienie Wydajności")
 
 complexity_steps = [10,20, 50, 80, 100, 150, 200, 300, 400, 500, 800, 1000]
 err_rect, err_trap, err_mc = [], [], []
@@ -382,3 +382,10 @@ with col_bench2:
     ax_time.grid(True, which="both", alpha=0.2)
     st.pyplot(fig_time)
 
+
+st.divider()
+st.header("💬Mój komentarz")
+st.write("Przede wszystkim chcę powiedzieć, że nienawidzę Jupyter Notebooków, jak zapewne widać.")
+st.write("Lepiej spędzić pare godzin robić to w pythonie na streamlit'cie.")
+st.write("Robiłem to tak między północą a 3:00, więc jak coś nie jest bardzo szczególowo opisane, to pewnie dlatego.")
+st.write("\nTeraz do faktycznych wniosków")
