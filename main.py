@@ -125,8 +125,8 @@ with tab1:
                 <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
                 <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.6f}</p>
                 <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.6f}</p>
-                <hr style="border: 0.5px solid var(--border-color)">
                 <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.6f}</p>
+                <hr style="border: 0.5px solid var(--border-color)">
             </div>
             """, unsafe_allow_html=True)
 
@@ -184,8 +184,8 @@ with tab2:
                 <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
                 <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.6f}</p>
                 <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.6f}</p>
-                <hr style="border: 0.5px solid var(--border-color)">
                 <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.6f}</p>
+                <hr style="border: 0.5px solid var(--border-color)">
             </div>
             """, unsafe_allow_html=True)
 
