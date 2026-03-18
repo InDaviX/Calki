@@ -413,5 +413,6 @@ st.write("""
          """)
 st.write("""
          Kończąc wywód - ja bym używał metody prostokątów wyrównywanej do środka przedziału. Metoda trapezów jest delikatnie lżejsza, więc nadaje
-         się lepiej do wielu prostych funkcji. Monte carlo wymaga specjalnej troski, ale przez swoją losowość przypomina hazard, więc i tak jest moim ulubieńcem
+         się lepiej do wielu prostych funkcji. Monte carlo wymaga specjalnej troski, ale przez swoją losowość przypomina hazard, więc i tak jest moim ulubieńcem.
          """)
+st.header("Dawid Szewcztk®")
