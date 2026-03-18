@@ -43,16 +43,17 @@ st.markdown("""
     }
     .right-panel {
         position: fixed;
-        top: 100px;
-        right: 30px;
-        width: 300px;
-        padding: 20px;
+        top: 80px;
+        right: 20px;
+        width: 320px;
+        padding: 15px;
         background-color: var(--secondary-background-color);
         color: var(--text-color);
         border: 1px solid var(--border-color);
-        border-radius: 15px;
+        border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         z-index: 999;
+        font-size: 13px;
     }
     [data-testid="stLatex"] {
         overflow-x: hidden !important;
@@ -89,7 +90,6 @@ with tab1:
         h_rect = funkcja_prosta(x_bins[1:])
     else:
         h_rect = funkcja_prosta(x_bins[:-1] + dx/2)
-    
     res_rect = m.sum(h_rect) * dx
     
     st.subheader(f"1. Metoda Prostokątów ({metoda_rect})")
@@ -147,9 +147,11 @@ with tab1:
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p style='font-size:14px'><b>Metoda Prostokątów:</b><br>⚖️ Błąd: {res_rect - y_ana:.10f}</p>
+            <p><b>Metoda Prostokątów ({metoda_rect}):</b><br>
+            🔵 Nadmiar: {s_p:.10f}<br>🔴 Niedomiar: {d_p:.10f}<br>⚖️ Błąd: {res_rect - y_ana:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
-            <p style='font-size:14px'><b>Metoda Trapezów:</b><br>⚖️ Błąd: {res_trap - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
+            <p><b>Metoda Trapezów:</b><br>
+            🔵 Nadmiar: {s_pt:.10f}<br>🔴 Niedomiar: {d_pt:.10f}<br>⚖️ Błąd: {res_trap - y_ana:.10f}</p></div>""", unsafe_allow_html=True)
 
 with tab2:
     st.markdown(r"<span style='font-size: 22px;'>📉 Analiza funkcji skomplikowanej: &nbsp; $\boldsymbol{f(x) = e^x \cdot \cos(e^x)}$</span>", unsafe_allow_html=True)
@@ -223,6 +225,8 @@ with tab2:
 
     if pokaz_bledy:
         st.markdown(f"""<div class="right-panel"><h3 style='margin-top:0'>📊 Statystyki błędu</h3>
-            <p style='font-size:14px'><b>Metoda Prostokątów:</b><br>⚖️ Błąd: {res_rc - y_ana_c:.10f}</p>
+            <p><b>Metoda Prostokątów ({metoda_rect}):</b><br>
+            🔵 Nadmiar: {s_c:.10f}<br>🔴 Niedomiar: {d_c:.10f}<br>⚖️ Błąd: {res_rc - y_ana_c:.10f}</p>
             <hr style="border:0.5px solid var(--border-color)">
-            <p style='font-size:14px'><b>Metoda Trapezów:</b><br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
+            <p><b>Metoda Trapezów:</b><br>
+            🔵 Nadmiar: {s_ct:.10f}<br>🔴 Niedomiar: {d_ct:.10f}<br>⚖️ Błąd: {res_tc - y_ana_c:.10f}</p></div>""", unsafe_allow_html=True)
