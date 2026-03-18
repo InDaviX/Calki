@@ -12,6 +12,7 @@ st.title("🧮 Wizualizacja Metod Całkowania Numerycznego")
 
 st.markdown("""
     <style>
+    /* Zakładki 50/50 */
     div[data-baseweb="tab-list"] {
         width: 100%;
         gap: 0px;
@@ -24,6 +25,8 @@ st.markdown("""
         font-size: 20px;
         font-weight: bold;
     }
+    
+    /* Margines w sidebarze */
     div[data-testid="stSelectbox"] {
         margin-bottom: 30px;
     }
@@ -31,26 +34,41 @@ st.markdown("""
         font-size: 16px;
         margin-top: 5px;
     }
+
+    /* FORMATOWANIE WYNIKÓW - MOTYW-AWARE */
     .result-label {
         font-size: 18px;
-        color: #666;
+        color: var(--text-color);
+        opacity: 0.8;
     }
     .result-value {
         font-size: 24px;
         font-weight: bold;
+        color: var(--text-color);
     }
-    /* PRAWY PANEL STATYSTYK */
+
+    /* PRAWY PANEL - REAGUJE NA MOTYW */
     .right-panel {
         position: fixed;
         top: 100px;
         right: 30px;
         width: 280px;
         padding: 20px;
-        background-color: white;
-        border: 1px solid #e6e9ef;
+        /* Używamy zmiennych systemowych Streamlita */
+        background-color: var(--secondary-background-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
         border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         z-index: 999;
+    }
+
+    /* POZBYCIE SIĘ SUWAKA POD LATEX */
+    [data-testid="stLatex"] {
+        overflow-x: hidden !important;
+    }
+    [data-testid="stLatex"] > div {
+        overflow-y: hidden !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -87,7 +105,8 @@ with tab1:
     wynik_num_1 = m.sum(heights) * dx
     wynik_ana_1 = (-m.exp(-b)*(b+1)) - (-m.exp(-a)*(a+1))
     
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(facecolor='none') # Przezroczyste tło wykresu pod motyw
+    ax.set_facecolor('none')
     ax.plot(x_plot, y_plot, color='royalblue', linewidth=2)
     s_prosta, d_prosta = 0, 0
     for i in range(n):
@@ -101,9 +120,15 @@ with tab1:
         if pokaz_bledy:
             ax.fill_between(step_x, step_f, h, where=(h > step_f), color='cyan', alpha=0.4)
             ax.fill_between(step_x, h, step_f, where=(step_f > h), color='red', alpha=0.4)
+    
+    # Dostosowanie kolorów osi do motywu
+    ax.tick_params(colors='gray')
+    ax.xaxis.label.set_color('gray')
+    ax.yaxis.label.set_color('gray')
+    
     ax.set_xlim(a, b)
     ax.set_ylim(-0.01, 0.4)
-    ax.grid(True, linestyle='--', alpha=0.6)
+    ax.grid(True, linestyle='--', alpha=0.3)
     st.pyplot(fig)
 
     if pokaz_bledy:
@@ -112,7 +137,7 @@ with tab1:
                 <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
                 <p>🔵 <b>Suma nadmiarów:</b><br>{s_prosta:.6f}</p>
                 <p>🔴 <b>Suma niedomiarów:</b><br>{d_prosta:.6f}</p>
-                <hr>
+                <hr style="border: 0.5px solid var(--border-color)">
                 <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_prosta - d_prosta:.6f}</p>
             </div>
             """, unsafe_allow_html=True)
@@ -142,7 +167,8 @@ with tab2:
     wynik_num_2 = m.sum(heights_c) * dx_c
     wynik_ana_2 = m.sin(m.exp(b_c)) - m.sin(m.exp(a_c))
         
-    fig2, ax2 = plt.subplots()
+    fig2, ax2 = plt.subplots(facecolor='none')
+    ax2.set_facecolor('none')
     ax2.plot(x_comp_plot, y_comp_plot, color='darkorange', linewidth=1)
     s_skompl, d_skompl = 0, 0
     for i in range(n):
@@ -156,9 +182,11 @@ with tab2:
         if pokaz_bledy:
             ax2.fill_between(step_x_c, step_f_c, h_c, where=(h_c > step_f_c), color='cyan', alpha=0.4)
             ax2.fill_between(step_x_c, h_c, step_f_c, where=(step_f_c > h_c), color='red', alpha=0.4)
+    
+    ax2.tick_params(colors='gray')
     ax2.set_xlim(a_c, b_c)
     ax2.set_ylim(-13, 13)
-    ax2.grid(True)
+    ax2.grid(True, alpha=0.2)
     st.pyplot(fig2)
 
     if pokaz_bledy:
@@ -167,7 +195,7 @@ with tab2:
                 <h3 style='margin-top:0'>📊 Statystyki błędu</h3>
                 <p>🔵 <b>Suma nadmiarów:</b><br>{s_skompl:.6f}</p>
                 <p>🔴 <b>Suma niedomiarów:</b><br>{d_skompl:.6f}</p>
-                <hr>
+                <hr style="border: 0.5px solid var(--border-color)">
                 <p>⚖️ <b>Błąd przybliżenia:</b><br>{s_skompl - d_skompl:.6f}</p>
             </div>
             """, unsafe_allow_html=True)
